@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">CryptoPal</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="wallet_name_placeholder">Wallet Name</string>
+    <string name="wallet_address_placeholder">Wallet Address</string>
+    <string name="wallet_balance_placeholder">Wallet Balance</string>
+    <string name="wallet_pk_placeholder">Wallet Private Key (Optional)</string>
+    <string name="done">Done</string>
+    <string name="add_wallet">Add Wallet</string>
+    <string name="missing_qr_title">Missing App</string>
+    <string name="missing_qr_text">To scan QR codes, you need the QR scanner app from ZXing. Would you like to download it?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="transition_balance">transition_balance</string>
+    <string name="transition_name">transition_name</string>
+    <string name="transition_address">transition_address</string>
+    <string name="wallet_details_title">Wallet Details</string>
+    <string name="error_updating">There was an error updating data.</string>
+    <string name="delete_wallet">Delete</string>
+    <string name="transaction_sent">Sent</string>
+    <string name="transaction_received">Received</string>
+    <string name="transaction_date_placeholder">Date</string>
+    <string name="last_updated_placeholder">Transactions last updated: 69 years ago</string>
+    <string name="BTC">BTC</string>
+</resources>
