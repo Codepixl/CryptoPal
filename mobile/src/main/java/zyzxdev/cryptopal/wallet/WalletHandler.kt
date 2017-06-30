@@ -1,7 +1,6 @@
-package zyzxdev.cryptopal
+package zyzxdev.cryptopal.wallet
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -19,7 +18,7 @@ class WalletHandler{
 		var wallets = ArrayList<Wallet>()
 
 		fun init(ctx: Context): Boolean{
-			this.ctx = ctx
+			Companion.ctx = ctx
 			val walletFile = File(ctx.filesDir, "wallets.json")
 			wallets = ArrayList<Wallet>()
 			var inp: FileInputStream? = null

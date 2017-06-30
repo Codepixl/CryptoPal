@@ -1,12 +1,13 @@
-package zyzxdev.cryptopal
+package zyzxdev.cryptopal.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent.getIntent
 import android.os.Bundle
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ImageView
+import zyzxdev.cryptopal.R
+import zyzxdev.cryptopal.util.Util
 
 /**
  * Created by aaron on 6/28/2017.

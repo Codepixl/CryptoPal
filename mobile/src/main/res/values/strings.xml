@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">CryptoPal</string>
-    <string name="action_refresh">Refresh</string>
+    <string name="title_activity_main_tabbed">MainTabbedActivity</string>
+    <string name="bar_title_dashboard">CryptoPal - Dashboard</string>
+    <string name="bar_title_people">CryptoPal - People</string>
     <string name="wallet_name_placeholder">Wallet Name</string>
     <string name="wallet_address_placeholder">Wallet Address</string>
     <string name="wallet_balance_placeholder">Wallet Balance</string>
@@ -11,15 +13,44 @@
     <string name="missing_qr_text">To scan QR codes, you need the QR scanner app from ZXing. Would you like to download it?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="transition_balance">transition_balance</string>
-    <string name="transition_name">transition_name</string>
-    <string name="transition_address">transition_address</string>
     <string name="wallet_details_title">Wallet Details</string>
     <string name="error_updating">There was an error updating data.</string>
-    <string name="delete_wallet">Delete</string>
     <string name="transaction_sent">Sent</string>
     <string name="transaction_received">Received</string>
     <string name="transaction_date_placeholder">Date</string>
     <string name="last_updated_placeholder">Transactions last updated: 69 years ago</string>
     <string name="BTC">BTC</string>
+    <string name="BTC_balance">%s BTC</string>
+    <string name="transactions_last_updated">Transactions last updated: %1$s</string>
+    <string name="blank_usd">$--.--</string>
+    <string name="BTC_value_placeholder">1 BTC = $--.--</string>
+    <string name="BTC_value">1 BTC = %s</string>
+    <string name="new_btc">Mined</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_people">People</string>
+    <string name="person_name_placeholder">Person Name</string>
+    <string name="person_address_placeholder">Person Address</string>
+    <string name="add_person">Add Person</string>
+
+
+    <!-- Menu Items -->
+    <string name="action_refresh">Refresh</string>
+    <string name="delete_wallet">Delete</string>
+
+    <!-- Transitions -->
+    <string name="transition_balance">transition_balance</string>
+    <string name="transition_name">transition_name</string>
+    <string name="transition_address">transition_address</string>
+    <string name="transition_main_background">transition_main_background</string>
+
+    <!-- Time Ago -->
+    <string name="never">never</string>
+    <string name="in_the_future">in the future</string>
+    <string name="just_now">just now</string>
+    <string name="a_minute_ago">a minute ago</string>
+    <string name="x_minutes_ago">%d minutes ago</string>
+    <string name="an_hour_ago">an hour ago</string>
+    <string name="x_hours_ago">%d hours ago</string>
+    <string name="yesterday">yesterday</string>
+    <string name="x_days_ago">%d days ago</string>
 </resources>

@@ -1,32 +1,33 @@
-package zyzxdev.cryptopal
+package zyzxdev.cryptopal.activity
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.ListView
-import android.widget.ProgressBar
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_wallet_details.*
-import java.math.BigDecimal
+import zyzxdev.cryptopal.dialog.QRDialog
+import zyzxdev.cryptopal.R
+import zyzxdev.cryptopal.util.TaskCompletedCallback
+import zyzxdev.cryptopal.util.Util
+import zyzxdev.cryptopal.wallet.Transaction
+import zyzxdev.cryptopal.wallet.Wallet
+import zyzxdev.cryptopal.wallet.WalletHandler
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
 class WalletDetailsActivity : AppCompatActivity() {
 
 	var wallet: Wallet? = null
-	var spinner: ProgressBar? = null
 	var listView: ListView? = null
-	var loading = false
+	var swipeRefresh : SwipeRefreshLayout? = null
 
 	companion object{
-		val balanceFormat = DecimalFormat("#");
+		val balanceFormat = DecimalFormat("#")
 		init{
 			balanceFormat.maximumFractionDigits = 8
 		}
@@ -41,25 +42,31 @@ class WalletDetailsActivity : AppCompatActivity() {
 		wallet = WalletHandler.wallets[intent.getIntExtra("wallet", 0)]
 		supportActionBar?.title = wallet?.name
 
-		(findViewById(R.id.walletBalance) as TextView).text = "${balanceFormat.format(wallet!!.balance)} BTC"
+		(findViewById(R.id.walletBalance) as TextView).text = getString(R.string.BTC_balance, balanceFormat.format(wallet!!.balance))
 
 		val btcValue = getSharedPreferences("data", Context.MODE_PRIVATE).getFloat("btcValue", -1f).toDouble()
 		val formatter = NumberFormat.getCurrencyInstance()
 		if(btcValue != -1.0)
-			(findViewById(R.id.walletBalanceUSD) as TextView).text = "${formatter.format(wallet!!.balance*btcValue)}"
+			(findViewById(R.id.walletBalanceUSD) as TextView).text = formatter.format(wallet!!.balance*btcValue)
 		else
-			(findViewById(R.id.walletBalanceUSD) as TextView).text = "$--.--"
+			(findViewById(R.id.walletBalanceUSD) as TextView).text = getString(R.string.blank_usd)
 
 		(findViewById(R.id.fab) as FloatingActionButton).setOnClickListener {
 			QRDialog(this, wallet!!.address).show()
 		}
 
-		(findViewById(R.id.lastUpdated) as TextView).text = "Transactions last updated: ${Util.getTimeAgo(wallet!!.lastUpdated)}"
+		(findViewById(R.id.lastUpdated) as TextView).text = getString(R.string.transactions_last_updated, Util.getTimeAgo(wallet!!.lastUpdated, this))
 
-		spinner = findViewById(R.id.loadingTransactionsSpinner) as ProgressBar
+		walletAddress.text = wallet?.address
 
 		listView = findViewById(R.id.mainListView) as ListView
-		listView?.adapter = Wallet.Transaction.TransactionAdapter(this, wallet!!)
+		listView?.adapter = Transaction.TransactionAdapter(this, wallet!!)
+
+
+		swipeRefresh = listView?.parent as SwipeRefreshLayout //findviewbyid isn't working for some reason
+		swipeRefresh?.setOnRefreshListener {
+			updateTransactions(true)
+		}
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -90,17 +97,16 @@ class WalletDetailsActivity : AppCompatActivity() {
 		}
 	}
 
-	fun updateTransactions(){
-		if(loading) return
-		loading = true
-		spinner?.visibility = View.VISIBLE
-		wallet?.refreshTransactions(this, object: TaskCompletedCallback{
+	fun updateTransactions(override: Boolean = false){
+		if(swipeRefresh!!.isRefreshing && !override) return
+		swipeRefresh?.isRefreshing = true
+		val ctx = this
+		wallet?.refreshTransactions(this, object: TaskCompletedCallback {
 			override fun taskCompleted(data: Object) {
-				loading = false
-				spinner?.visibility = View.GONE
-				(listView?.adapter as Wallet.Transaction.TransactionAdapter).notifyDataSetChanged()
-				(findViewById(R.id.lastUpdated) as TextView).text = "Transactions last updated: ${Util.getTimeAgo(wallet!!.lastUpdated)}"
-				(findViewById(R.id.walletBalance) as TextView).text = "${balanceFormat.format(wallet!!.balance)} BTC"
+				swipeRefresh?.isRefreshing = false
+				(listView?.adapter as Transaction.TransactionAdapter).notifyDataSetChanged()
+				(findViewById(R.id.lastUpdated) as TextView).text = getString(R.string.transactions_last_updated, Util.getTimeAgo(wallet!!.lastUpdated, ctx))
+				(findViewById(R.id.walletBalance) as TextView).text = getString(R.string.BTC_balance, balanceFormat.format(wallet!!.balance))
 			}
 		})
 	}

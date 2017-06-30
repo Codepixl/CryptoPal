@@ -1,4 +1,4 @@
-package zyzxdev.cryptopal
+package zyzxdev.cryptopal.util
 
 import java.util.*
 

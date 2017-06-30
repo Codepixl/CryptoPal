@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainLinearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground" >
+
+    <TextView
+        android:id="@+id/personName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/person_name_placeholder"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <TextView
+        android:id="@+id/personAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/person_address_placeholder"
+        android:textSize="14sp" />
+</LinearLayout>

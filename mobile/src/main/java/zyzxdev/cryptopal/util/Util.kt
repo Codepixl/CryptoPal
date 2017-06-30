@@ -1,13 +1,16 @@
-package zyzxdev.cryptopal
+package zyzxdev.cryptopal.util
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.google.zxing.EncodeHintType
 import com.google.zxing.WriterException
+import zyzxdev.cryptopal.R
 import java.util.*
 
 
@@ -42,7 +45,7 @@ class Util{
 		private val DAY_MILLIS = 24 * HOUR_MILLIS
 
 
-		fun getTimeAgo(time: Long): String? {
+		fun getTimeAgo(time: Long, ctx: Context): String? {
 			var time = time
 			if (time < 1000000000000L) {
 				// if timestamp given in seconds, convert to millis
@@ -51,26 +54,25 @@ class Util{
 
 			val now = System.currentTimeMillis()
 
-			// TODO: localize
 			val diff = now - time
 			if(time < 0){
-				return "never"
+				return ctx.getString(R.string.never)
 			}else if(diff < 0){
-				return "in the future"
+				return ctx.getString(R.string.in_the_future)
 			}else if (diff < MINUTE_MILLIS) {
-				return "just now"
+				return ctx.getString(R.string.just_now)
 			} else if (diff < 2 * MINUTE_MILLIS) {
-				return "a minute ago"
+				return ctx.getString(R.string.a_minute_ago)
 			} else if (diff < 50 * MINUTE_MILLIS) {
-				return  "${diff / MINUTE_MILLIS} minutes ago"
+				return  ctx.getString(R.string.x_minutes_ago, diff / MINUTE_MILLIS)
 			} else if (diff < 90 * MINUTE_MILLIS) {
-				return "an hour ago"
+				return ctx.getString(R.string.an_hour_ago)
 			} else if (diff < 24 * HOUR_MILLIS) {
-				return "${diff / HOUR_MILLIS} hours ago"
+				return ctx.getString(R.string.x_hours_ago, diff / HOUR_MILLIS)
 			} else if (diff < 48 * HOUR_MILLIS) {
-				return "yesterday"
+				return ctx.getString(R.string.yesterday)
 			} else {
-				return "${diff / DAY_MILLIS} days ago"
+				return ctx.getString(R.string.x_days_ago, diff / DAY_MILLIS)
 			}
 		}
 	}
