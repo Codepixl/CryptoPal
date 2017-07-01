@@ -1,7 +1,9 @@
 package zyzxdev.cryptopal.activity
 
+import android.Manifest
 import zyzxdev.cryptopal.R
 import zyzxdev.cryptopal.util.TaskCompletedCallback
+import zyzxdev.cryptopal.util.Util
 
 class AddWalletActivity : android.support.v7.app.AppCompatActivity() {
 
@@ -41,6 +43,7 @@ class AddWalletActivity : android.support.v7.app.AppCompatActivity() {
 	}
 
 	private fun scanQR(requestCode: Int){
+		Util.requestPermission(Manifest.permission.CAMERA, this, 0)
 		currentRequestCode = requestCode
 		com.google.zxing.integration.android.IntentIntegrator(this)
 				.setDesiredBarcodeFormats(com.google.zxing.integration.android.IntentIntegrator.QR_CODE_TYPES)

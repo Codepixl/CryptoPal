@@ -17,6 +17,7 @@ class WalletHandler{
 		private var ctx: Context? = null
 		var wallets = ArrayList<Wallet>()
 
+		//Load wallets from saved JSON data
 		fun init(ctx: Context): Boolean{
 			Companion.ctx = ctx
 			val walletFile = File(ctx.filesDir, "wallets.json")
@@ -47,6 +48,7 @@ class WalletHandler{
 			return true
 		}
 
+		//Save wallets to JSON
 		fun save(): Boolean{
 			if(ctx == null) return false
 			var out: FileOutputStream? = null

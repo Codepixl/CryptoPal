@@ -19,6 +19,7 @@ class PeopleManager{
 		fun save(ctx: Context){
 			val prefs = ctx.getSharedPreferences("people", Context.MODE_PRIVATE)
 			val edit = prefs.edit()
+			edit.clear()
 			for(person in people)
 				edit.putString(person.address, person.name)
 			edit.apply()

@@ -80,6 +80,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String>{
 			if(connection != null)
 				connection.disconnect();
 		}
+
 		return stringBuilder.toString();
 	}
 

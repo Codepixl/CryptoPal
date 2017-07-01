@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CryptoPal</string>
+    <string name="action_refresh">Refrescar</string>
+    <string name="delete_wallet">Eliminar</string>
+    <string name="last_updated_placeholder">Transacciones actualizadas: --</string>
+    <string name="never">Nunca</string>
+    <string name="in_the_future">En el futuro</string>
+    <string name="just_now">justo ahora</string>
+    <string name="a_minute_ago">hace un minuto</string>
+    <string name="x_minutes_ago">hace %d minutos</string>
+    <string name="an_hour_ago">hace un hora</string>
+    <string name="x_hours_ago">hace %d horas</string>
+    <string name="yesterday">ayer</string>
+    <string name="x_days_ago">hace %d días</string>
+    <string name="bar_title_wallets">CryptoPal - Carteras</string>
+    <string name="bar_title_people">CryptoPal - Gente</string>
+    <string name="bar_title_settings">CryptoPal - Ajustes</string>
+    <string name="title_settings">Ajustes</string>
+    <string name="wallet_name_placeholder">Nombre de la cartera</string>
+    <string name="wallet_address_placeholder">Dirección de la cartera</string>
+    <string name="wallet_balance_placeholder">Saldo de la cartera</string>
+    <string name="wallet_pk_placeholder">Billetera llave privada (opcional)</string>
+    <string name="done">Hecho</string>
+    <string name="add_wallet">Añadir Cartera</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="error_updating">Se ha producido un error al descargar los datos.</string>
+    <string name="transaction_sent">Expedido</string>
+    <string name="transaction_received">Recibido</string>
+    <string name="transaction_date_placeholder">Fecha</string>
+    <string name="transactions_last_updated">Transacciones actualizadas:</string>
+    <string name="new_btc">Minado</string>
+    <string name="title_wallets">Carteras</string>
+    <string name="title_people">Gente</string>
+    <string name="person_name_placeholder">Nombre de persona</string>
+    <string name="person_address_placeholder">Dirección de la persona</string>
+    <string name="add_person">Añadir persona</string>
+    <string name="delete_person">Eliminar persona</string>
+    <string name="edit_person">Editar persona</string>
+    <string name="bar_title_dashboard">CryptoPal - Tablero</string>
+    <string name="title_dashboard">Tablero</string>
+</resources>

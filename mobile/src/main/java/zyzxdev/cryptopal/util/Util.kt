@@ -1,8 +1,13 @@
 package zyzxdev.cryptopal.util
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.google.zxing.BarcodeFormat
@@ -21,8 +26,9 @@ class Util{
 	companion object {
 		@Throws(WriterException::class)
 		fun generateQRCode(codeText: String): Bitmap {
-			val hintMap = Hashtable<EncodeHintType, ErrorCorrectionLevel>()
-			hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H) // H = 30% damage
+			val hintMap = Hashtable<EncodeHintType, Any>()
+			hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H)
+			hintMap.put(EncodeHintType.MARGIN, 0)
 
 			val qrCodeWriter = QRCodeWriter()
 
@@ -74,6 +80,11 @@ class Util{
 			} else {
 				return ctx.getString(R.string.x_days_ago, diff / DAY_MILLIS)
 			}
+		}
+
+		fun requestPermission(permission: String, ctx: Activity, code: Int){
+			if (ContextCompat.checkSelfPermission(ctx, permission) != PackageManager.PERMISSION_GRANTED)
+				ActivityCompat.requestPermissions(ctx, arrayOf(permission), code)
 		}
 	}
 }

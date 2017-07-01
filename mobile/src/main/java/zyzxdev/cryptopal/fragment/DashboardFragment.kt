@@ -1,66 +1,63 @@
 package zyzxdev.cryptopal.fragment
 
-import kotlinx.android.synthetic.main.content_dashboard.*
-import kotlinx.android.synthetic.main.dashboard.*
+import android.content.Context
+import android.net.Uri
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_dashboard.*
+
 import zyzxdev.cryptopal.R
-import zyzxdev.cryptopal.activity.AddWalletActivity
+import zyzxdev.cryptopal.activity.MainTabbedActivity
+import zyzxdev.cryptopal.multiViewAdapter.BTCValueMultiView
+import zyzxdev.cryptopal.multiViewAdapter.MultiViewAdapter
 import zyzxdev.cryptopal.util.DownloadTask
 import zyzxdev.cryptopal.util.TaskCompletedCallback
 
+class DashboardFragment : Fragment() {
+	val cards = ArrayList<MultiViewAdapter.MultiViewItem>()
 
-class DashboardFragment : android.support.v4.app.Fragment() {
-
-	private var itemsToRefresh = 0
-
-	override fun onActivityCreated(savedInstanceState: android.os.Bundle?) {
+	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
+		cards.clear()
 
-		mainListView.adapter = zyzxdev.cryptopal.wallet.Wallet.WalletAdapter(context)
+		cards.add(BTCValueMultiView())
 
-		fab.setOnClickListener { _ ->
-			startActivity(android.content.Intent(context, AddWalletActivity::class.java))
-		}
+		mainListView.adapter = MultiViewAdapter(context, cards)
+
+		//Refresh data now, if necessary
+		if(activity is MainTabbedActivity)
+			if((activity as MainTabbedActivity).shouldRefresh())
+				refreshData()
 
 		swipeRefresh.setOnRefreshListener {
 			refreshData(true)
 		}
-
-		if(activity is zyzxdev.cryptopal.activity.MainTabbedActivity)
-			(activity as zyzxdev.cryptopal.activity.MainTabbedActivity).refreshIfNecessary()
 	}
 
-	override fun onCreateView(inflater: android.view.LayoutInflater?, container: android.view.ViewGroup?, savedInstanceState: android.os.Bundle?): android.view.View? {
-		//(activity as AppCompatActivity).setSupportActionBar(toolbar)
-		setHasOptionsMenu(true)
-		return inflater?.inflate(R.layout.dashboard, container, false)
+	override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+		// Inflate the layout for this fragment
+		return inflater!!.inflate(R.layout.fragment_dashboard, container, false)
 	}
 
-	override fun onCreateOptionsMenu(menu: android.view.Menu, inflater: android.view.MenuInflater) {
-		inflater.inflate(R.menu.menu_dashboard, menu)
-		super.onCreateOptionsMenu(menu, inflater)
-	}
-
-	override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		return when (item.itemId) {
-			R.id.refresh -> {
-				refreshData()
-				return true
-			}
-			else -> super.onOptionsItemSelected(item)
-		}
-	}
-
-	fun refreshData(override: Boolean = false){
+	private fun refreshData(override: Boolean = false){
+		//If we're already refreshing, and !override, return
 		if(swipeRefresh!!.isRefreshing && !override) return
+
+		//Set refreshing state to true
 		swipeRefresh?.isRefreshing = true
-		itemsToRefresh = zyzxdev.cryptopal.wallet.WalletHandler.Companion.wallets.size+1
+
+		//Set btcValue to -1 so other activities know that we're refreshing it
 		context.getSharedPreferences("data", android.content.Context.MODE_PRIVATE).edit().putFloat("btcValue", -1f).apply()
+
+		//Download the current 24-hour BTC value, and set it
 		DownloadTask(context).setCallback(object: TaskCompletedCallback {
 			override fun taskCompleted(data: Object) {
-				refreshedItem()
+				swipeRefresh?.isRefreshing = false
+				if(mainListView != null)
+					(mainListView?.adapter as MultiViewAdapter).notifyDataSetChanged()
 				try {
 					val btc = (data as String).toFloat()
 					context.getSharedPreferences("data", android.content.Context.MODE_PRIVATE).edit().putFloat("btcValue", btc).apply()
@@ -69,29 +66,5 @@ class DashboardFragment : android.support.v4.app.Fragment() {
 				}
 			}
 		}).execute("https://blockchain.info/q/24hrprice")
-
-		for(wallet in zyzxdev.cryptopal.wallet.WalletHandler.Companion.wallets){
-			wallet.refreshBalance(context, object: TaskCompletedCallback {
-				override fun taskCompleted(data: Object) {
-					refreshedItem()
-				}
-			})
-		}
 	}
-
-	private fun refreshedItem(){
-		if(mainListView == null) return //We exited the fragment before this loaded
-		itemsToRefresh--
-		if(itemsToRefresh == 0){
-			swipeRefresh?.isRefreshing = false
-			(mainListView.adapter as zyzxdev.cryptopal.wallet.Wallet.WalletAdapter).notifyDataSetChanged()
-		}
-	}
-
-	override fun onResume() {
-		super.onResume()
-		(mainListView.adapter as zyzxdev.cryptopal.wallet.Wallet.WalletAdapter).notifyDataSetChanged()
-	}
-
-
 }
