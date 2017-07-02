@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="open_in_browser">Abierta en el navegador</string>
     <string name="app_name">CryptoPal</string>
     <string name="action_refresh">Refrescar</string>
-    <string name="delete_wallet">Eliminar</string>
+    <string name="delete_wallet">Eliminar Cartera</string>
     <string name="last_updated_placeholder">Transacciones actualizadas: --</string>
     <string name="never">Nunca</string>
     <string name="in_the_future">En el futuro</string>

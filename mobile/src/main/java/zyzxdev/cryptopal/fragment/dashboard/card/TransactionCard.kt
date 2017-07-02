@@ -1,0 +1,96 @@
+package zyzxdev.cryptopal.fragment.dashboard.card
+
+import android.content.Context
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.CardView
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import zyzxdev.cryptopal.R
+import zyzxdev.cryptopal.activity.WalletDetailsActivity
+import zyzxdev.cryptopal.people.PeopleManager
+import zyzxdev.cryptopal.util.MultiViewAdapter
+import zyzxdev.cryptopal.util.Util
+import zyzxdev.cryptopal.view.ExpandableCardView
+import zyzxdev.cryptopal.wallet.Transaction
+
+/**
+ * Created by aaron on 7/1/2017.
+ */
+class TransactionCard(val transaction: Transaction): MultiViewAdapter.MultiViewItem{
+	override fun onCreate(ctx: Context, view: View) {
+		populate(transaction, view, ctx, true)
+	}
+
+	override fun getLayout(): Int {
+		return R.layout.card_transaction
+	}
+
+	companion object{
+		private fun click(v: View){
+			val card = v.findViewById(R.id.mainCardView) as ExpandableCardView
+			val icon = v.findViewById(R.id.expandIcon) as android.widget.ImageView
+
+			//Handle card collapsing and expanding
+			if(card.collapsed){
+				val time = (v.findViewById(R.id.mainCardView) as ExpandableCardView).expand()
+				icon.animate().rotation(180f).duration = time.toLong()
+			}else{
+				//That fancy math resolves out to 60dp
+				val time = (v.findViewById(R.id.mainCardView) as ExpandableCardView).collapse((60 * android.content.res.Resources.getSystem().displayMetrics.density).toInt())
+				icon.animate().rotation(0f).duration = time.toLong()
+			}
+		}
+
+		fun populate(transaction: Transaction, view: View, ctx: Context, showWalletName: Boolean = false){
+			(view.findViewById(R.id.sentReceived) as TextView).text = ctx.getString(
+					if(transaction.sent)
+						R.string.transaction_sent
+					else
+						R.string.transaction_received
+			)
+			(view.findViewById(R.id.amount) as TextView).text = ctx.getString(R.string.BTC_balance, WalletDetailsActivity.balanceFormat.format(transaction.amount))
+			(view.findViewById(R.id.amount) as TextView).setTextColor(ContextCompat.getColor(ctx,
+					if(transaction.sent)
+						android.R.color.holo_red_dark
+					else
+						android.R.color.holo_green_dark
+			))
+			(view.findViewById(R.id.transactionIcon) as ImageView).setImageDrawable(ContextCompat.getDrawable(ctx,
+					if(transaction.sent)
+						R.drawable.ic_send_red_30dp
+					else
+						R.drawable.ic_receive_green_30dp
+			))
+			(view.findViewById(R.id.date) as TextView).text = Util.Companion.getTimeAgo(transaction.time, ctx)
+
+			//Populate other addresses
+			val stringBuilder = StringBuilder()
+			for(address in if(transaction.sent)
+				transaction.otherOutputs
+			else
+				transaction.otherInputs
+			) {
+				stringBuilder.append(PeopleManager.getNameForAddress(address))
+				stringBuilder.append("\n")
+			}
+
+			//Remove last \n from address list
+			stringBuilder.setLength(stringBuilder.length-1)
+
+			//Set otherAddress TextView to StringBuilder contents
+			(view.findViewById(R.id.otherAddress) as TextView).text = stringBuilder.toString()
+
+			//Handle click
+			(view.findViewById(R.id.mainCardView) as CardView).setOnClickListener {
+				click(view)
+			}
+
+			//Hide wallet name if we should, or populate otherwise
+			if(!showWalletName)
+				view.findViewById(R.id.walletName).visibility = View.GONE
+			else
+				(view.findViewById(R.id.walletName) as TextView).text = PeopleManager.getNameForAddress(transaction.address)
+		}
+	}
+}

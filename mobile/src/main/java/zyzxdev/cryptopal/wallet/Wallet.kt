@@ -27,7 +27,6 @@ import java.text.NumberFormat
 class Wallet(var name: String, var address: String, var privateKey: String){
 	var balance: Double = 0.0
 	var lastUpdated: Long = -1
-	var transactionsJSON: JSONArray? = null
 	val transactions = ArrayList<Transaction>()
 
 	companion object{
@@ -42,10 +41,10 @@ class Wallet(var name: String, var address: String, var privateKey: String){
 		name = json.getString("name")
 		balance = json.getDouble("balance")
 		lastUpdated = json.getLong("lastUpdated")
-		if(json.has("txs")) {
-			transactionsJSON = json.getJSONArray("txs")
-			parseTransactions()
-		}
+
+		//load transactions
+		val transactionsJSON = json.getJSONArray("transactions")
+		(0 until transactionsJSON.length()).mapTo(transactions) { Transaction.fromSaved(transactionsJSON.getJSONObject(it)) }
 	}
 
 	//Convert wallet to JSON data
@@ -56,13 +55,15 @@ class Wallet(var name: String, var address: String, var privateKey: String){
 		obj.put("balance", balance)
 		obj.put("privateKey", privateKey)
 		obj.put("lastUpdated", lastUpdated)
-		if(transactionsJSON != null)
-			obj.put("txs", transactionsJSON)
+		val transactionsJSON = JSONArray()
+		for(transaction in transactions)
+			transactionsJSON.put(transaction.toJSON())
+		obj.put("transactions", transactionsJSON)
 		return obj
 	}
 
 	//Parse the transactions for this wallet from JSON data
-	fun parseTransactions(){
+	fun parseTransactions(transactionsJSON: JSONArray){
 		transactions.clear()
 		(0..transactionsJSON!!.length()-1).mapTo(transactions) { Transaction(transactionsJSON!!.getJSONObject(it), this) }
 	}
@@ -96,8 +97,7 @@ class Wallet(var name: String, var address: String, var privateKey: String){
 				try {
 					val jsonobj = JSONObject(data as String)
 					balance = jsonobj.getLong("final_balance")* SATOSHI
-					transactionsJSON = jsonobj.getJSONArray("txs")
-					parseTransactions()
+					parseTransactions(jsonobj.getJSONArray("txs"))
 				}catch(e: JSONException){
 					e.printStackTrace()
 					Log.v("CryptoPal","Error parsing JSON.")

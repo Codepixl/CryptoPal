@@ -1,5 +1,7 @@
 package zyzxdev.cryptopal.activity
 
+import android.app.PendingIntent
+import android.content.Intent
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -14,11 +16,16 @@ import zyzxdev.cryptopal.R
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.os.Build
 import android.content.res.ColorStateList
+import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main_tabbed.*
-import zyzxdev.cryptopal.fragment.DashboardFragment
+import zyzxdev.cryptopal.alarm.CryptoAlarmManager
+import zyzxdev.cryptopal.broadcast.CryptoBroadcastReceiver
+import zyzxdev.cryptopal.fragment.dashboard.DashboardFragment
 import zyzxdev.cryptopal.fragment.WalletsFragment
 import zyzxdev.cryptopal.fragment.PeopleFragment
-import zyzxdev.cryptopal.fragment.SettingsFragment
 import zyzxdev.cryptopal.people.PeopleManager
 import zyzxdev.cryptopal.util.Animations
 import zyzxdev.cryptopal.wallet.WalletHandler
@@ -64,6 +71,9 @@ class MainTabbedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener{
 		viewPager = findViewById(R.id.container) as ViewPager
 		viewPager!!.adapter = pagerAdapter
 
+		//Setup viewPager to keep views in memory to prevent lag
+		viewPager?.offscreenPageLimit = pagerAdapter!!.count
+
 		//Setup listeners for onPageChange and onTabSelected
 		viewPager!!.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
 		tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPager))
@@ -78,13 +88,12 @@ class MainTabbedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener{
 				0 -> DashboardFragment()
 				1 -> WalletsFragment()
 				2 -> PeopleFragment()
-				3 -> SettingsFragment()
-				else -> SettingsFragment()
+				else -> DashboardFragment()
 			}
 		}
 
 		override fun getCount(): Int {
-			return 4
+			return 3
 		}
 	}
 
@@ -92,6 +101,22 @@ class MainTabbedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener{
 		val ret = !refreshed.getOrDefault(currentTab, false)
 		refreshed.put(currentTab, true)
 		return ret
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+		super.onCreateOptionsMenu(menu)
+		menuInflater.inflate(R.menu.menu_main_tabbed, menu)
+		return true
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+		when(item?.itemId){
+			R.id.menu_item_settings -> {
+				startActivity(Intent(this, SettingsActivity::class.java))
+				return true
+			}
+		}
+		return super.onOptionsItemSelected(item)
 	}
 
 	override fun onTabReselected(tab: TabLayout.Tab?) {}
@@ -102,7 +127,6 @@ class MainTabbedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener{
 			0 -> R.string.bar_title_dashboard
 			1 -> R.string.bar_title_wallets
 			2 -> R.string.bar_title_people
-			3 -> R.string.bar_title_settings
 			else -> R.string.app_name
 		})
 	}

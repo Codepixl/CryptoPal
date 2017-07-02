@@ -7,21 +7,48 @@ import android.view.ViewGroup
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import org.json.JSONArray
+import org.json.JSONObject
 import zyzxdev.cryptopal.R
 import zyzxdev.cryptopal.activity.WalletDetailsActivity
+import zyzxdev.cryptopal.fragment.dashboard.card.TransactionCard
 import zyzxdev.cryptopal.people.PeopleManager
 import zyzxdev.cryptopal.util.Util
 import zyzxdev.cryptopal.view.ExpandableCardView
 
-class Transaction(json: org.json.JSONObject, owner: Wallet){
+class Transaction private constructor(){
 	var sent: Boolean = false
 	var amount: Double = 0.0
 	val otherInputs = ArrayList<String>()
 	val otherOutputs = ArrayList<String>()
 	var time: Long = 0
 	var newBTC = false
+	var address:String = ""
 
-	init{
+	companion object{
+		fun fromSaved(json: JSONObject): Transaction{
+			val ret = Transaction()
+
+			ret.sent = json.getBoolean("sent")
+			ret.amount = json.getDouble("amount")
+			ret.time = json.getLong("time")
+			ret.newBTC = json.getBoolean("newBTC")
+			ret.address = json.getString("address")
+
+			val inputs = json.getJSONArray("otherInputs")
+			for(i in 0 until inputs.length())
+				ret.otherInputs.add(inputs.getString(i))
+
+			val outputs = json.getJSONArray("otherOutputs")
+			for(i in 0 until outputs.length())
+				ret.otherOutputs.add(outputs.getString(i))
+
+			return ret
+		}
+	}
+
+	constructor(json:JSONObject, owner: Wallet): this(){
+
 		//Go over all of the inputs
 		val inputs = json.getJSONArray("inputs")
 		for(i in 0..inputs.length()-1){
@@ -34,7 +61,7 @@ class Transaction(json: org.json.JSONObject, owner: Wallet){
 				val inputAddr = prevOut.getString("addr")
 				if(inputAddr == owner.address)
 					amount -= prevOut.getInt("value")
-				else //Otherwise, add the address to otherInputs.
+				else if(!otherInputs.contains(inputAddr)) //Otherwise, add the address to otherInputs.
 					otherInputs.add(inputAddr)
 			}catch(e: org.json.JSONException){}
 		}
@@ -49,7 +76,7 @@ class Transaction(json: org.json.JSONObject, owner: Wallet){
 				//If one of the outputs is our address, add the amount to the total.
 				if (outputAddr == owner.address)
 					amount += out.getInt("value")
-				else //Otherwise, add the address to otherOutputs.
+				else if(!otherOutputs.contains(outputAddr)) //Otherwise, add the address to otherOutputs.
 					otherOutputs.add(outputAddr)
 			}catch(e: org.json.JSONException){}
 		}
@@ -68,6 +95,30 @@ class Transaction(json: org.json.JSONObject, owner: Wallet){
 		//If there are no inputs, then that means new BTC were generated.
 		if(!sent && otherInputs.size == 0)
 			newBTC = true
+
+		this.address = owner.address
+	}
+
+	fun toJSON(): JSONObject{
+		val json = JSONObject()
+
+		json.put("sent", sent)
+		json.put("amount", amount)
+		json.put("time", time)
+		json.put("newBTC", newBTC)
+		json.put("address", address)
+
+		val inputs = JSONArray()
+		for(input in otherInputs)
+			inputs.put(input)
+		json.put("otherInputs", inputs)
+
+		val outputs = JSONArray()
+		for(output in otherOutputs)
+			outputs.put(output)
+		json.put("otherOutputs", outputs)
+
+		return json
 	}
 
 	override fun toString(): String{
@@ -92,71 +143,14 @@ class Transaction(json: org.json.JSONObject, owner: Wallet){
 			return i.toLong()
 		}
 
-		fun click(i: Int, v: android.view.View){
-			val card = v.findViewById(R.id.mainCardView) as ExpandableCardView
-			val icon = v.findViewById(R.id.expandIcon) as android.widget.ImageView
-			val r = v.resources
-
-			//Handle card collapsing and expanding
-			if(card.collapsed){
-				val time = (v.findViewById(R.id.mainCardView) as ExpandableCardView).expand()
-				icon.animate().rotation(180f).duration = time.toLong()
-			}else{
-				//That fancy math resolves out to 60dp
-				val time = (v.findViewById(R.id.mainCardView) as ExpandableCardView).collapse((60 * android.content.res.Resources.getSystem().displayMetrics.density).toInt())
-				icon.animate().rotation(0f).duration = time.toLong()
-			}
-		}
-
 		//Inflate the view and set values and stuff
 		@SuppressLint("ViewHolder")
 		override fun getView(i: Int, view: View?, viewGroup: ViewGroup?): View {
-			val v = inflater.inflate(R.layout.list_item_transaction, viewGroup, false)
+			val v = inflater.inflate(R.layout.card_transaction, viewGroup, false)
 
 			val transaction = wallet.transactions[i]
 
-			(v.findViewById(R.id.sentReceived) as TextView).text = ctx.getString(
-					if(transaction.sent)
-						R.string.transaction_sent
-					else
-						R.string.transaction_received
-			)
-			(v.findViewById(R.id.amount) as TextView).text = ctx.getString(R.string.BTC_balance, WalletDetailsActivity.balanceFormat.format(transaction.amount))
-			(v.findViewById(R.id.amount) as TextView).setTextColor(ContextCompat.getColor(ctx,
-					if(transaction.sent)
-						android.R.color.holo_red_dark
-					else
-						android.R.color.holo_green_dark
-			))
-			(v.findViewById(R.id.transactionIcon) as ImageView).setImageDrawable(ContextCompat.getDrawable(ctx,
-					if(transaction.sent)
-						R.drawable.ic_send_red_30dp
-					else
-						R.drawable.ic_receive_green_30dp
-			))
-			(v.findViewById(R.id.date) as TextView).text = Util.Companion.getTimeAgo(transaction.time, ctx)
-
-			//Populate other addresses
-			val stringBuilder = StringBuilder()
-			for(address in if(transaction.sent)
-				transaction.otherOutputs
-			else
-				transaction.otherInputs
-			) {
-				stringBuilder.append(PeopleManager.getNameForAddress(address))
-				stringBuilder.append("\n")
-			}
-
-			//Remove last \n from address list
-			stringBuilder.setLength(stringBuilder.length-1)
-
-			//Set otherAddress TextView to StringBuilder contents
-			(v.findViewById(R.id.otherAddress) as TextView).text = stringBuilder.toString()
-
-			//Handle click
-			(v.findViewById(R.id.mainCardView) as CardView).setOnClickListener {
-				click(i, v)
-			}
+			TransactionCard.populate(transaction, v, ctx)
 
 			return v
 		}

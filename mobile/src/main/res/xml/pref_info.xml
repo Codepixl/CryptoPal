@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:enabled="true"
+        android:key="license"
+        android:title="@string/title_license"
+        android:summary="@string/license"></Preference>
+    <Preference
+        android:enabled="true"
+        android:key="devOptions"
+        android:title="@string/dev_options"></Preference>
+</PreferenceScreen>

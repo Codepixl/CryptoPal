@@ -67,6 +67,10 @@ class WalletsFragment : android.support.v4.app.Fragment() {
 
 		itemsToRefresh = zyzxdev.cryptopal.wallet.WalletHandler.Companion.wallets.size
 
+		//If there's nothing to refresh, call refreshedItem
+		if(itemsToRefresh == 0)
+			refreshedItem()
+
 		//Refresh all wallet balances
 		for(wallet in zyzxdev.cryptopal.wallet.WalletHandler.Companion.wallets){
 			wallet.refreshBalance(context, object: TaskCompletedCallback {
@@ -81,7 +85,7 @@ class WalletsFragment : android.support.v4.app.Fragment() {
 	private fun refreshedItem(){
 		if(mainListView == null) return //We exited the fragment before this loaded
 		itemsToRefresh--
-		if(itemsToRefresh == 0){
+		if(itemsToRefresh <= 0){
 			swipeRefresh?.isRefreshing = false
 			(mainListView.adapter as zyzxdev.cryptopal.wallet.Wallet.WalletAdapter).notifyDataSetChanged()
 		}

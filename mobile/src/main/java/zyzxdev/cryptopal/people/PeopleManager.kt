@@ -1,6 +1,7 @@
 package zyzxdev.cryptopal.people
 
 import android.content.Context
+import zyzxdev.cryptopal.wallet.WalletHandler
 
 /**
  * Created by aaron on 6/29/2017.
@@ -25,8 +26,14 @@ class PeopleManager{
 			edit.apply()
 		}
 
+		/**
+		 * @return The name of a person/wallet corresponding to an address. If there is no corresponding name, it returns the address.
+		 */
 		fun getNameForAddress(address: String): String{
 			people
+					.filter { it.address == address }
+					.forEach { return it.name }
+			WalletHandler.wallets
 					.filter { it.address == address }
 					.forEach { return it.name }
 			return address

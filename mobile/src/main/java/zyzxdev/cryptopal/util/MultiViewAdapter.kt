@@ -1,11 +1,10 @@
-package zyzxdev.cryptopal.multiViewAdapter
+package zyzxdev.cryptopal.util
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import zyzxdev.cryptopal.R
 
 /**
  * Created by aaron on 7/1/2017.

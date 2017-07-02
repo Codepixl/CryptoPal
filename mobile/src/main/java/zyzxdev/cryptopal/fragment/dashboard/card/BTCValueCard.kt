@@ -1,15 +1,16 @@
-package zyzxdev.cryptopal.multiViewAdapter
+package zyzxdev.cryptopal.fragment.dashboard.card
 
 import android.content.Context
 import android.view.View
 import android.widget.TextView
 import zyzxdev.cryptopal.R
+import zyzxdev.cryptopal.util.MultiViewAdapter
 import java.text.NumberFormat
 
 /**
  * Created by aaron on 7/1/2017.
  */
-class BTCValueMultiView: MultiViewAdapter.MultiViewItem{
+class BTCValueCard : MultiViewAdapter.MultiViewItem{
 	override fun onCreate(ctx: Context, view: View) {
 		val btcValue = ctx.getSharedPreferences("data", Context.MODE_PRIVATE).getFloat("btcValue", -1f).toDouble()
 		if(btcValue != -1.0){
@@ -20,7 +21,7 @@ class BTCValueMultiView: MultiViewAdapter.MultiViewItem{
 	}
 
 	override fun getLayout(): Int {
-		return R.layout.list_item_btc_value
+		return R.layout.card_btc_value
 	}
 
 }
