@@ -22,6 +22,6 @@ class QRDialog(ctx: Context, val stringData: String): Dialog(ctx) {
 		window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 		window.setBackgroundDrawableResource(android.R.color.transparent)
 
-		(findViewById(R.id.qrImage) as ImageView).setImageBitmap(Util.generateQRCode(stringData))
+		findViewById<ImageView>(R.id.qrImage).setImageBitmap(Util.generateQRCode(stringData))
 	}
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.LinearLayout
 import android.widget.TextView
 import zyzxdev.cryptopal.R
 import zyzxdev.cryptopal.activity.AddPersonActivity
@@ -36,9 +37,9 @@ class Person(var name: String, var address: String){
 				v = inflater.inflate(R.layout.list_item_person, viewGroup, false)
 			else
 				v = view
-			(v.findViewById(R.id.personName) as TextView).text = PeopleManager.people[i].name
-			(v.findViewById(R.id.personAddress) as TextView).text = PeopleManager.people[i].address
-			(v.findViewById(R.id.mainLinearLayout)).setOnClickListener {
+			(v.findViewById<TextView>(R.id.personName) as TextView).text = PeopleManager.people[i].name
+			(v.findViewById<TextView>(R.id.personAddress) as TextView).text = PeopleManager.people[i].address
+			(v.findViewById<LinearLayout>(R.id.mainLinearLayout)).setOnClickListener {
 				val intent = Intent(ctx, PersonDetailsActivity::class.java)
 				intent.putExtra("person", i)
 				ctx.startActivity(intent)

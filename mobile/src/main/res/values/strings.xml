@@ -60,7 +60,7 @@
     <string name="last_updated_placeholder">Transactions last updated: 69 years ago</string>
     <string name="BTC">BTC</string>
     <string name="BTC_balance">%s BTC</string>
-    <string name="transactions_last_updated">Transactions last updated: %1$s</string>
+    <string name="transactions_last_updated">Transactions last updated: %s</string>
     <string name="blank_usd">$--.--</string>
     <string name="BTC_value_placeholder">1 BTC = $--.--</string>
     <string name="BTC_value">1 BTC = %s</string>

@@ -17,9 +17,9 @@ class BTCValueCard : DashboardCard {
 		val btcValue = ctx.getSharedPreferences("data", Context.MODE_PRIVATE).getFloat("btcValue", -1f).toDouble()
 		if(btcValue != -1.0){
 			val formatter = NumberFormat.getCurrencyInstance()
-			(view.findViewById(R.id.btcVal) as TextView).text = ctx.getString(R.string.BTC_value, formatter.format(btcValue))
+			(view.findViewById<TextView>(R.id.btcVal) as TextView).text = ctx.getString(R.string.BTC_value, formatter.format(btcValue))
 		}else
-			(view.findViewById(R.id.btcVal) as TextView).text = ctx.getString(R.string.BTC_value_placeholder)
+			(view.findViewById<TextView>(R.id.btcVal) as TextView).text = ctx.getString(R.string.BTC_value_placeholder)
 	}
 
 	override fun getLayout(): Int {

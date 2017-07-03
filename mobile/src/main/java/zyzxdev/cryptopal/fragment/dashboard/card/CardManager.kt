@@ -1,6 +1,7 @@
 package zyzxdev.cryptopal.fragment.dashboard.card
 
 import android.content.Context
+import android.support.v7.widget.CardView
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import zyzxdev.cryptopal.R
 import zyzxdev.cryptopal.util.MultiViewAdapter
 import zyzxdev.cryptopal.util.SwipeDismissListViewTouchListener
 import zyzxdev.cryptopal.util.SwipeDismissTouchListener
+import zyzxdev.cryptopal.view.ExpandableCardView
 import zyzxdev.cryptopal.wallet.WalletManager
 import java.io.File
 import java.io.FileInputStream
@@ -142,7 +144,7 @@ class CardManager{
 				}
 			})
 
-			(v.findViewById(R.id.mainCardView)).setOnTouchListener(touchListener)
+			(v.findViewById<CardView>(R.id.mainCardView)).setOnTouchListener(touchListener)
 
 			return v
 		}

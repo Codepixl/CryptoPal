@@ -44,24 +44,24 @@ class WalletDetailsActivity : AppCompatActivity() {
 		wallet = WalletManager.wallets[intent.getIntExtra("wallet", 0)]
 		supportActionBar?.title = wallet?.name
 
-		(findViewById(R.id.walletBalance) as TextView).text = getString(R.string.BTC_balance, balanceFormat.format(wallet!!.balance))
+		(findViewById<TextView>(R.id.walletBalance) as TextView).text = getString(R.string.BTC_balance, balanceFormat.format(wallet!!.balance))
 
 		val btcValue = getSharedPreferences("data", Context.MODE_PRIVATE).getFloat("btcValue", -1f).toDouble()
 		val formatter = NumberFormat.getCurrencyInstance()
 		if(btcValue != -1.0)
-			(findViewById(R.id.walletBalanceUSD) as TextView).text = formatter.format(wallet!!.balance*btcValue)
+			(findViewById<TextView>(R.id.walletBalanceUSD) as TextView).text = formatter.format(wallet!!.balance*btcValue)
 		else
-			(findViewById(R.id.walletBalanceUSD) as TextView).text = getString(R.string.blank_usd)
+			(findViewById<TextView>(R.id.walletBalanceUSD) as TextView).text = getString(R.string.blank_usd)
 
-		(findViewById(R.id.fab) as FloatingActionButton).setOnClickListener {
+		findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
 			QRDialog(this, wallet!!.address).show()
 		}
 
-		(findViewById(R.id.lastUpdated) as TextView).text = getString(R.string.transactions_last_updated, Util.getTimeAgo(wallet!!.lastUpdated, this))
+		(findViewById<TextView>(R.id.lastUpdated) as TextView).text = getString(R.string.transactions_last_updated, Util.getTimeAgo(wallet!!.lastUpdated, this))
 
 		walletAddress.text = wallet?.address
 
-		listView = findViewById(R.id.mainListView) as ListView
+		listView = findViewById<ListView>(R.id.mainListView)
 		listView?.adapter = Transaction.TransactionAdapter(this, wallet!!)
 
 
@@ -111,8 +111,8 @@ class WalletDetailsActivity : AppCompatActivity() {
 			override fun taskCompleted(data: Object) {
 				swipeRefresh?.isRefreshing = false
 				(listView?.adapter as Transaction.TransactionAdapter).notifyDataSetChanged()
-				(findViewById(R.id.lastUpdated) as TextView).text = getString(R.string.transactions_last_updated, Util.getTimeAgo(wallet!!.lastUpdated, ctx))
-				(findViewById(R.id.walletBalance) as TextView).text = getString(R.string.BTC_balance, balanceFormat.format(wallet!!.balance))
+				(findViewById<TextView>(R.id.lastUpdated) as TextView).text = getString(R.string.transactions_last_updated, Util.getTimeAgo(wallet!!.lastUpdated, ctx))
+				(findViewById<TextView>(R.id.walletBalance) as TextView).text = getString(R.string.BTC_balance, balanceFormat.format(wallet!!.balance))
 			}
 		})
 	}

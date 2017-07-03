@@ -36,7 +36,7 @@ class CryptoAlarmReceiver: BroadcastReceiver(){
 		if(toUpdate == 0) return
 
 		val notification = NotificationCompat.Builder(context)
-				.setSmallIcon(R.drawable.ic_qrcode)
+				.setSmallIcon(R.drawable.ic_notification_cryptopal)
 				.setContentTitle("Updating Transactions")
 				.setContentText("Hold on...")
 				.setOngoing(true)
@@ -62,7 +62,7 @@ class CryptoAlarmReceiver: BroadcastReceiver(){
 				Log.v("CryptoPal", "NEW TRANSACTION "+transaction)
 
 				val notification = NotificationCompat.Builder(ctx)
-						.setSmallIcon(R.drawable.ic_qrcode)
+						.setSmallIcon(R.drawable.ic_notification_cryptopal)
 						.setContentTitle(PeopleManager.getNameForAddress(transaction.address))
 						.setContentText(transaction.toString())
 						.build()

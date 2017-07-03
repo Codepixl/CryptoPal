@@ -30,7 +30,7 @@
     <string name="transaction_sent">Expedido</string>
     <string name="transaction_received">Recibido</string>
     <string name="transaction_date_placeholder">Fecha</string>
-    <string name="transactions_last_updated">Transacciones actualizadas:</string>
+    <string name="transactions_last_updated">Transacciones actualizadas: %s</string>
     <string name="new_btc">Minado</string>
     <string name="title_wallets">Carteras</string>
     <string name="title_people">Gente</string>

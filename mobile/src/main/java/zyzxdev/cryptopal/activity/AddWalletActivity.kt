@@ -1,6 +1,9 @@
 package zyzxdev.cryptopal.activity
 
 import android.Manifest
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ProgressBar
 import zyzxdev.cryptopal.R
 import zyzxdev.cryptopal.util.TaskCompletedCallback
 import zyzxdev.cryptopal.util.Util
@@ -18,12 +21,12 @@ class AddWalletActivity : android.support.v7.app.AppCompatActivity() {
 		actionBar?.title = getString(R.string.add_wallet)
 		supportActionBar?.title = getString(R.string.add_wallet)
 
-		(findViewById(R.id.doneButton) as android.widget.Button).setOnClickListener {
-			(findViewById(R.id.doneButton) as android.widget.Button).isEnabled = false
-			(findViewById(R.id.loadingSpinner) as android.widget.ProgressBar).visibility = android.view.View.VISIBLE
-			val name = (findViewById(R.id.walletName) as android.widget.EditText).text.toString()
-			val address = (findViewById(R.id.walletAddress) as android.widget.EditText).text.toString()
-			val pk = (findViewById(R.id.walletPK) as android.widget.EditText).text.toString()
+		findViewById<Button>(R.id.doneButton).setOnClickListener {
+			findViewById<Button>(R.id.doneButton).isEnabled = false
+			findViewById<ProgressBar>(R.id.loadingSpinner).visibility = android.view.View.VISIBLE
+			val name = (findViewById<EditText>(R.id.walletName) as EditText).text.toString()
+			val address = (findViewById<EditText>(R.id.walletAddress) as android.widget.EditText).text.toString()
+			val pk = (findViewById<EditText>(R.id.walletPK) as android.widget.EditText).text.toString()
 			val wallet = zyzxdev.cryptopal.wallet.Wallet(name, address, pk)
 			WalletManager.wallets.add(wallet)
 			WalletManager.save()
@@ -34,11 +37,11 @@ class AddWalletActivity : android.support.v7.app.AppCompatActivity() {
 			})
 		}
 
-		(findViewById(R.id.scanAddr) as android.widget.Button).setOnClickListener {
+		findViewById<Button>(R.id.scanAddr).setOnClickListener {
 			scanQR(SCAN_ADDR)
 		}
 
-		(findViewById(R.id.scanPK) as android.widget.Button).setOnClickListener {
+		findViewById<Button>(R.id.scanPK).setOnClickListener {
 			scanQR(SCAN_PK)
 		}
 	}
@@ -57,8 +60,8 @@ class AddWalletActivity : android.support.v7.app.AppCompatActivity() {
 		if(requestCode == com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE) {
 			val result: com.google.zxing.integration.android.IntentResult? = com.google.zxing.integration.android.IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
 			when (currentRequestCode) {
-				SCAN_ADDR -> (findViewById(R.id.walletAddress) as android.widget.EditText).setText(result?.contents)
-				SCAN_PK -> (findViewById(R.id.walletPK) as android.widget.EditText).setText(result?.contents)
+				SCAN_ADDR -> (findViewById<EditText>(R.id.walletAddress) as android.widget.EditText).setText(result?.contents)
+				SCAN_PK -> (findViewById<EditText>(R.id.walletPK) as android.widget.EditText).setText(result?.contents)
 			}
 		}
 	}

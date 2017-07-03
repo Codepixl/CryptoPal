@@ -62,12 +62,12 @@ class MainTabbedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener{
 		}
 
 		//Setup toolbar
-		val toolbar = findViewById(R.id.toolbar) as Toolbar
+		val toolbar = findViewById<Toolbar>(R.id.toolbar)
 		setSupportActionBar(toolbar)
 
 		//Setup viewPager to use the SectionsPagerAdapter
 		pagerAdapter = SectionsPagerAdapter(supportFragmentManager)
-		viewPager = findViewById(R.id.container) as ViewPager
+		viewPager = findViewById<ViewPager>(R.id.container)
 		viewPager!!.adapter = pagerAdapter
 
 		//Setup viewPager to keep views in memory to prevent lag

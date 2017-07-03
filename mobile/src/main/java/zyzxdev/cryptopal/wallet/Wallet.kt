@@ -17,6 +17,7 @@ import zyzxdev.cryptopal.util.DownloadTask
 import zyzxdev.cryptopal.R
 import zyzxdev.cryptopal.activity.WalletDetailsActivity
 import zyzxdev.cryptopal.util.TaskCompletedCallback
+import zyzxdev.cryptopal.view.ExpandableCardView
 
 
 /**
@@ -139,7 +140,7 @@ class Wallet(var name: String, var address: String, var privateKey: String){
 		fun click(id: Int, view: View){
 			val intent = Intent(ctx, WalletDetailsActivity::class.java)
 			intent.putExtra("wallet", id)
-			val card = view.findViewById(R.id.mainCardView)
+			val card = view.findViewById<CardView>(R.id.mainCardView)
 			val options = ActivityOptionsCompat.makeScaleUpAnimation(card, 0, 0, card.width, card.height)
 			ctx.startActivity(intent, options.toBundle())
 		}
@@ -151,10 +152,10 @@ class Wallet(var name: String, var address: String, var privateKey: String){
 				v = inflater.inflate(R.layout.list_item_wallet, viewGroup, false)
 			else
 				v = view
-			(v.findViewById(R.id.walletName) as TextView).text = WalletManager.wallets[i].name
-			(v.findViewById(R.id.walletAddress) as TextView).text = WalletManager.wallets[i].address
-			(v.findViewById(R.id.walletBalance) as TextView).text = ctx.getString(R.string.BTC_balance, (Math.round(WalletManager.wallets[i].balance*100)/100.0).toString())
-			(v.findViewById(R.id.mainCardView) as CardView).setOnClickListener {
+			(v.findViewById<TextView>(R.id.walletName) as TextView).text = WalletManager.wallets[i].name
+			(v.findViewById<TextView>(R.id.walletAddress) as TextView).text = WalletManager.wallets[i].address
+			(v.findViewById<TextView>(R.id.walletBalance) as TextView).text = ctx.getString(R.string.BTC_balance, (Math.round(WalletManager.wallets[i].balance*100)/100.0).toString())
+			(v.findViewById<CardView>(R.id.mainCardView) as CardView).setOnClickListener {
 				click(i, v)
 			}
 			return v
