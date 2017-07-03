@@ -24,6 +24,7 @@ class Transaction private constructor(){
 	var time: Long = 0
 	var newBTC = false
 	var address:String = ""
+	var hash:String = ""
 
 	companion object{
 		fun fromSaved(json: JSONObject): Transaction{
@@ -34,6 +35,7 @@ class Transaction private constructor(){
 			ret.time = json.getLong("time")
 			ret.newBTC = json.getBoolean("newBTC")
 			ret.address = json.getString("address")
+			ret.hash = json.getString("hash")
 
 			val inputs = json.getJSONArray("otherInputs")
 			for(i in 0 until inputs.length())
@@ -84,6 +86,9 @@ class Transaction private constructor(){
 		//Get the time of the transaction
 		time = json.getLong("time")
 
+		//Get hash of the transaction
+		hash = json.getString("hash")
+
 		//The amount is in satoshis, so multiply it to get BTCs
 		amount *= Wallet.SATOSHI
 
@@ -107,6 +112,7 @@ class Transaction private constructor(){
 		json.put("time", time)
 		json.put("newBTC", newBTC)
 		json.put("address", address)
+		json.put("hash", hash)
 
 		val inputs = JSONArray()
 		for(input in otherInputs)
@@ -122,7 +128,21 @@ class Transaction private constructor(){
 	}
 
 	override fun toString(): String{
-		return "${if(sent) "sent" else "received"} $amount BTC"
+		return "${if(sent) "Sent" else "Received"} ${WalletDetailsActivity.balanceFormat.format(amount)} BTC ${if(sent) "to" else "from"} ${
+			if(sent){
+				if(otherOutputs.size == 1)
+					PeopleManager.getNameForAddress(otherOutputs[0])
+				else
+					"${otherOutputs.size} addresses"
+			}else{
+				if(otherInputs.size == 0)
+					"(Mined)"
+				else if(otherInputs.size == 1)
+					PeopleManager.getNameForAddress(otherInputs[0])
+				else
+					"${otherInputs.size} addresses"
+			}
+		}"
 	}
 
 	/**

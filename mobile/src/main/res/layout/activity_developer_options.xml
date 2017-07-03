@@ -17,11 +17,13 @@
         android:id="@+id/addUpdateCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:text="@string/add_update_card" />
 
     <Button
         android:id="@+id/addBTCValueCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:text="@string/add_btc_value_card" />
 </LinearLayout>

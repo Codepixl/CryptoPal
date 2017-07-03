@@ -9,7 +9,7 @@ import android.widget.BaseAdapter
 /**
  * Created by aaron on 7/1/2017.
  */
-class MultiViewAdapter(val ctx: Context, val items: List<MultiViewItem>): BaseAdapter(){
+open class MultiViewAdapter(val ctx: Context, val items: List<MultiViewItem>): BaseAdapter(){
 	private val inflater: LayoutInflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
 	override fun getView(i: Int, view: View?, viewGroup: ViewGroup?): View {

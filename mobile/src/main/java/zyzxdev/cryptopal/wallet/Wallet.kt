@@ -17,7 +17,6 @@ import zyzxdev.cryptopal.util.DownloadTask
 import zyzxdev.cryptopal.R
 import zyzxdev.cryptopal.activity.WalletDetailsActivity
 import zyzxdev.cryptopal.util.TaskCompletedCallback
-import java.text.NumberFormat
 
 
 /**
@@ -65,7 +64,7 @@ class Wallet(var name: String, var address: String, var privateKey: String){
 	//Parse the transactions for this wallet from JSON data
 	fun parseTransactions(transactionsJSON: JSONArray){
 		transactions.clear()
-		(0..transactionsJSON!!.length()-1).mapTo(transactions) { Transaction(transactionsJSON!!.getJSONObject(it), this) }
+		(0..transactionsJSON.length()-1).mapTo(transactions) { Transaction(transactionsJSON.getJSONObject(it), this) }
 	}
 
 	fun getRoundedBalance(): Double{
@@ -90,21 +89,30 @@ class Wallet(var name: String, var address: String, var privateKey: String){
 	//Refreshes the last 50 transactions for this wallet.
 	//Transactions are parsed in the Transaction class.
 	//Transactions are parsed inside of the async call to avoid UI hangups.
-	fun refreshTransactions(ctx: Context, callback: TaskCompletedCallback? = null){
+	//Callback data is an arrayList of new transactions.
+	fun refreshTransactions(ctx: Context, callback: TaskCompletedCallback? = null, save: Boolean = true){
 		Log.v("CryptoPal","Downloading Transactions...")
+
 		DownloadTask(ctx).setCallback(object: TaskCompletedCallback {
 			override fun taskCompleted(data: Object) {
+				val txHashes = ArrayList<String>()
+				transactions.mapTo(txHashes){ it.hash }
+				val ret = ArrayList<Transaction>()
 				try {
+
 					val jsonobj = JSONObject(data as String)
 					balance = jsonobj.getLong("final_balance")* SATOSHI
 					parseTransactions(jsonobj.getJSONArray("txs"))
+
+					transactions.filterNotTo(ret) { txHashes.contains(it.hash) }
 				}catch(e: JSONException){
 					e.printStackTrace()
 					Log.v("CryptoPal","Error parsing JSON.")
 				}
 				lastUpdated = System.currentTimeMillis()
-				WalletHandler.save()
-				callback?.taskCompleted(data)
+				if(save)
+					WalletManager.save()
+				callback?.taskCompleted(ret as Object)
 			}
 		}).execute("https://blockchain.info/rawaddr/$address")
 	}
@@ -116,11 +124,11 @@ class Wallet(var name: String, var address: String, var privateKey: String){
 		private val inflater: LayoutInflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
 		override fun getCount(): Int {
-			return WalletHandler.wallets.size
+			return WalletManager.wallets.size
 		}
 
 		override fun getItem(i: Int): Any {
-			return WalletHandler.wallets[i]
+			return WalletManager.wallets[i]
 		}
 
 		override fun getItemId(i: Int): Long {
@@ -143,9 +151,9 @@ class Wallet(var name: String, var address: String, var privateKey: String){
 				v = inflater.inflate(R.layout.list_item_wallet, viewGroup, false)
 			else
 				v = view
-			(v.findViewById(R.id.walletName) as TextView).text = WalletHandler.wallets[i].name
-			(v.findViewById(R.id.walletAddress) as TextView).text = WalletHandler.wallets[i].address
-			(v.findViewById(R.id.walletBalance) as TextView).text = ctx.getString(R.string.BTC_balance, (Math.round(WalletHandler.wallets[i].balance*100)/100.0).toString())
+			(v.findViewById(R.id.walletName) as TextView).text = WalletManager.wallets[i].name
+			(v.findViewById(R.id.walletAddress) as TextView).text = WalletManager.wallets[i].address
+			(v.findViewById(R.id.walletBalance) as TextView).text = ctx.getString(R.string.BTC_balance, (Math.round(WalletManager.wallets[i].balance*100)/100.0).toString())
 			(v.findViewById(R.id.mainCardView) as CardView).setOnClickListener {
 				click(i, v)
 			}

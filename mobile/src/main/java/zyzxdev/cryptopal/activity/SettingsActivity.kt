@@ -174,12 +174,12 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 						preferenceClicks = 0
 					preferenceClicks++
 					lastPreferenceClick = System.currentTimeMillis()
-					if (preferenceClicks == 5) {
+					if (preferenceClicks == 7) {
 						showToast(Toast.makeText(activity, activity.getString(R.string.dev_options_shown), Toast.LENGTH_SHORT))
 						devOptionsEnabled = true
 						preferenceScreen.addPreference(devOptions)
 					}else if (preferenceClicks > 2)
-						showToast(Toast.makeText(activity, activity.getString(R.string.x_taps_away, 5 - preferenceClicks), Toast.LENGTH_SHORT))
+						showToast(Toast.makeText(activity, activity.getString(R.string.x_taps_away, 7 - preferenceClicks), Toast.LENGTH_SHORT))
 				}
 				true
 			}

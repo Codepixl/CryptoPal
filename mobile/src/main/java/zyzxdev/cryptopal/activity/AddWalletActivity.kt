@@ -4,6 +4,7 @@ import android.Manifest
 import zyzxdev.cryptopal.R
 import zyzxdev.cryptopal.util.TaskCompletedCallback
 import zyzxdev.cryptopal.util.Util
+import zyzxdev.cryptopal.wallet.WalletManager
 
 class AddWalletActivity : android.support.v7.app.AppCompatActivity() {
 
@@ -24,13 +25,13 @@ class AddWalletActivity : android.support.v7.app.AppCompatActivity() {
 			val address = (findViewById(R.id.walletAddress) as android.widget.EditText).text.toString()
 			val pk = (findViewById(R.id.walletPK) as android.widget.EditText).text.toString()
 			val wallet = zyzxdev.cryptopal.wallet.Wallet(name, address, pk)
+			WalletManager.wallets.add(wallet)
+			WalletManager.save()
 			wallet.refreshTransactions(this, object: TaskCompletedCallback {
 				override fun taskCompleted(data: Object) {
 					onBackPressed()
 				}
 			})
-			zyzxdev.cryptopal.wallet.WalletHandler.Companion.wallets.add(wallet)
-			zyzxdev.cryptopal.wallet.WalletHandler.Companion.save()
 		}
 
 		(findViewById(R.id.scanAddr) as android.widget.Button).setOnClickListener {

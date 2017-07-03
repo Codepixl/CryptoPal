@@ -1,6 +1,5 @@
 package zyzxdev.cryptopal.activity
 
-import android.app.PendingIntent
 import android.content.Intent
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
@@ -18,17 +17,16 @@ import android.os.Build
 import android.content.res.ColorStateList
 import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main_tabbed.*
 import zyzxdev.cryptopal.alarm.CryptoAlarmManager
-import zyzxdev.cryptopal.broadcast.CryptoBroadcastReceiver
 import zyzxdev.cryptopal.fragment.dashboard.DashboardFragment
 import zyzxdev.cryptopal.fragment.WalletsFragment
 import zyzxdev.cryptopal.fragment.PeopleFragment
+import zyzxdev.cryptopal.fragment.dashboard.card.CardManager
 import zyzxdev.cryptopal.people.PeopleManager
 import zyzxdev.cryptopal.util.Animations
-import zyzxdev.cryptopal.wallet.WalletHandler
+import zyzxdev.cryptopal.wallet.WalletManager
 
 
 class MainTabbedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener{
@@ -43,7 +41,8 @@ class MainTabbedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener{
 
 		//Load data
 		PeopleManager.init(this)
-		WalletHandler.init(this)
+		WalletManager.init(this)
+		CardManager.init(this)
 		Animations.init(this)
 
 		//Setup tab icon colors to show white when selected and transparent when not
@@ -80,6 +79,16 @@ class MainTabbedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener{
 		tabs.addOnTabSelectedListener(this)
 
 		supportActionBar?.title = getString(R.string.bar_title_dashboard)
+	}
+
+	override fun onStart(){
+		super.onStart()
+		CryptoAlarmManager.cancelAlarm(this) //Stop updating cards automatically when in the app
+	}
+
+	override fun onPause() {
+		super.onPause()
+		CryptoAlarmManager.startAlarm(this) //Start updating cards again when we leave the activity
 	}
 
 	inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {

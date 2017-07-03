@@ -6,10 +6,10 @@ import android.support.v7.widget.CardView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import org.json.JSONObject
 import zyzxdev.cryptopal.R
 import zyzxdev.cryptopal.activity.WalletDetailsActivity
 import zyzxdev.cryptopal.people.PeopleManager
-import zyzxdev.cryptopal.util.MultiViewAdapter
 import zyzxdev.cryptopal.util.Util
 import zyzxdev.cryptopal.view.ExpandableCardView
 import zyzxdev.cryptopal.wallet.Transaction
@@ -17,7 +17,17 @@ import zyzxdev.cryptopal.wallet.Transaction
 /**
  * Created by aaron on 7/1/2017.
  */
-class TransactionCard(val transaction: Transaction): MultiViewAdapter.MultiViewItem{
+class TransactionCard: DashboardCard {
+	val transaction: Transaction
+
+	constructor(transaction: Transaction){
+		this.transaction = transaction
+	}
+
+	constructor(json: JSONObject){
+		transaction = Transaction.fromSaved(json)
+	}
+
 	override fun onCreate(ctx: Context, view: View) {
 		populate(transaction, view, ctx, true)
 	}
@@ -26,7 +36,17 @@ class TransactionCard(val transaction: Transaction): MultiViewAdapter.MultiViewI
 		return R.layout.card_transaction
 	}
 
+	override fun toJSON(): JSONObject? {
+		return transaction.toJSON()
+	}
+
+	override fun getTypeName(): String {
+		return typeName
+	}
+
 	companion object{
+		val typeName = "TransactionCard"
+
 		private fun click(v: View){
 			val card = v.findViewById(R.id.mainCardView) as ExpandableCardView
 			val icon = v.findViewById(R.id.expandIcon) as android.widget.ImageView
@@ -74,6 +94,9 @@ class TransactionCard(val transaction: Transaction): MultiViewAdapter.MultiViewI
 				stringBuilder.append(PeopleManager.getNameForAddress(address))
 				stringBuilder.append("\n")
 			}
+
+			if(transaction.newBTC)
+				stringBuilder.append(ctx.getString(R.string.new_btc)+"\n")
 
 			//Remove last \n from address list
 			stringBuilder.setLength(stringBuilder.length-1)

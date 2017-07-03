@@ -4,7 +4,6 @@ import kotlinx.android.synthetic.main.fragment_wallets.*
 import zyzxdev.cryptopal.R
 import zyzxdev.cryptopal.activity.AddWalletActivity
 import zyzxdev.cryptopal.activity.MainTabbedActivity
-import zyzxdev.cryptopal.util.DownloadTask
 import zyzxdev.cryptopal.util.TaskCompletedCallback
 import zyzxdev.cryptopal.wallet.Wallet
 
@@ -65,14 +64,14 @@ class WalletsFragment : android.support.v4.app.Fragment() {
 		//Set refreshing state to true
 		swipeRefresh?.isRefreshing = true
 
-		itemsToRefresh = zyzxdev.cryptopal.wallet.WalletHandler.Companion.wallets.size
+		itemsToRefresh = zyzxdev.cryptopal.wallet.WalletManager.Companion.wallets.size
 
 		//If there's nothing to refresh, call refreshedItem
 		if(itemsToRefresh == 0)
 			refreshedItem()
 
 		//Refresh all wallet balances
-		for(wallet in zyzxdev.cryptopal.wallet.WalletHandler.Companion.wallets){
+		for(wallet in zyzxdev.cryptopal.wallet.WalletManager.Companion.wallets){
 			wallet.refreshBalance(context, object: TaskCompletedCallback {
 				override fun taskCompleted(data: Object) {
 					refreshedItem()

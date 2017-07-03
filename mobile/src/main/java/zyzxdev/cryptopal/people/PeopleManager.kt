@@ -1,7 +1,7 @@
 package zyzxdev.cryptopal.people
 
 import android.content.Context
-import zyzxdev.cryptopal.wallet.WalletHandler
+import zyzxdev.cryptopal.wallet.WalletManager
 
 /**
  * Created by aaron on 6/29/2017.
@@ -33,7 +33,7 @@ class PeopleManager{
 			people
 					.filter { it.address == address }
 					.forEach { return it.name }
-			WalletHandler.wallets
+			WalletManager.wallets
 					.filter { it.address == address }
 					.forEach { return it.name }
 			return address

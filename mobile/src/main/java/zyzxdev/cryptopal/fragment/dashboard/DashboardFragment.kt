@@ -6,35 +6,36 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ListView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 
 import zyzxdev.cryptopal.R
 import zyzxdev.cryptopal.activity.MainTabbedActivity
 import zyzxdev.cryptopal.fragment.dashboard.card.BTCValueCard
+import zyzxdev.cryptopal.fragment.dashboard.card.CardManager
 import zyzxdev.cryptopal.util.MultiViewAdapter
 import zyzxdev.cryptopal.util.DownloadTask
+import zyzxdev.cryptopal.util.SwipeDismissListViewTouchListener
 import zyzxdev.cryptopal.util.TaskCompletedCallback
 
 class DashboardFragment : Fragment() {
-	val cards = ArrayList<MultiViewAdapter.MultiViewItem>()
+	var isRefreshing = false
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
-		cards.clear()
 
-		cards.add(BTCValueCard())
-
-		mainListView.adapter = MultiViewAdapter(context, cards)
+		mainListView.adapter = CardManager.CardViewAdapter(context, CardManager.cards, mainListView)
 
 		//Refresh data now, if necessary
 		if(activity is MainTabbedActivity)
 			if((activity as MainTabbedActivity).shouldRefresh())
 				refreshData()
+	}
 
-		swipeRefresh.setOnRefreshListener {
-			refreshData(true)
-		}
+	override fun onResume() {
+		super.onResume()
+		(mainListView.adapter as CardManager.CardViewAdapter).notifyDataSetChanged()
 	}
 
 	override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,10 +45,10 @@ class DashboardFragment : Fragment() {
 
 	private fun refreshData(override: Boolean = false){
 		//If we're already refreshing, and !override, return
-		if(swipeRefresh!!.isRefreshing && !override) return
+		if(isRefreshing && !override) return
 
 		//Set refreshing state to true
-		swipeRefresh?.isRefreshing = true
+		isRefreshing = true
 
 		//Set btcValue to -1 so other activities know that we're refreshing it
 		context.getSharedPreferences("data", Context.MODE_PRIVATE).edit().putFloat("btcValue", -1f).apply()
@@ -55,7 +56,7 @@ class DashboardFragment : Fragment() {
 		//Download the current 24-hour BTC value, and set it
 		DownloadTask(context).setCallback(object: TaskCompletedCallback {
 			override fun taskCompleted(data: Object) {
-				swipeRefresh?.isRefreshing = false
+				isRefreshing = false
 				if(mainListView != null)
 					(mainListView?.adapter as MultiViewAdapter).notifyDataSetChanged()
 				try {

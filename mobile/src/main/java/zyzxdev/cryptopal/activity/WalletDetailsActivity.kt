@@ -18,7 +18,7 @@ import zyzxdev.cryptopal.util.TaskCompletedCallback
 import zyzxdev.cryptopal.util.Util
 import zyzxdev.cryptopal.wallet.Transaction
 import zyzxdev.cryptopal.wallet.Wallet
-import zyzxdev.cryptopal.wallet.WalletHandler
+import zyzxdev.cryptopal.wallet.WalletManager
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
@@ -41,7 +41,7 @@ class WalletDetailsActivity : AppCompatActivity() {
 		setSupportActionBar(toolbar)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-		wallet = WalletHandler.wallets[intent.getIntExtra("wallet", 0)]
+		wallet = WalletManager.wallets[intent.getIntExtra("wallet", 0)]
 		supportActionBar?.title = wallet?.name
 
 		(findViewById(R.id.walletBalance) as TextView).text = getString(R.string.BTC_balance, balanceFormat.format(wallet!!.balance))
@@ -84,8 +84,8 @@ class WalletDetailsActivity : AppCompatActivity() {
 				return true
 			}
 			R.id.menu_item_delete -> {
-				WalletHandler.wallets.remove(wallet)
-				WalletHandler.save()
+				WalletManager.wallets.remove(wallet)
+				WalletManager.save()
 				finish()
 				return true
 			}

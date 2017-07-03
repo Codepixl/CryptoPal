@@ -12,7 +12,7 @@ import java.nio.charset.Charset
 /**
  * Created by aaron on 6/27/2017.
  */
-class WalletHandler{
+class WalletManager {
 	companion object{
 		private var ctx: Context? = null
 		var wallets = ArrayList<Wallet>()
