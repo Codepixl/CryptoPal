@@ -9,8 +9,12 @@ import zyzxdev.cryptopal.wallet.WalletManager
 class PeopleManager{
 	companion object{
 		val people = ArrayList<Person>()
+		var inited = false
 
 		fun init(ctx: Context){
+			if(inited) return
+			inited = true
+
 			val prefs = ctx.getSharedPreferences("people", Context.MODE_PRIVATE)
 			people.clear()
 			for((address, name) in prefs.all)

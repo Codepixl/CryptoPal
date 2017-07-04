@@ -28,8 +28,12 @@ class CardManager{
 	companion object{
 		private var ctx: Context? = null
 		val cards = ArrayList<DashboardCard>()
+		var inited = false
 
 		fun init(ctx: Context): Boolean{
+			if(inited) return false
+			inited = true
+
 			Companion.ctx = ctx
 
 			cards.clear()

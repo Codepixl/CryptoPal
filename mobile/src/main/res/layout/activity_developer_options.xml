@@ -26,4 +26,10 @@
         android:layout_height="wrap_content"
         android:enabled="false"
         android:text="@string/add_btc_value_card" />
+
+    <Button
+        android:id="@+id/updateNow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update Now" />
 </LinearLayout>

@@ -16,10 +16,15 @@ class WalletManager {
 	companion object{
 		private var ctx: Context? = null
 		var wallets = ArrayList<Wallet>()
+		var inited = false
 
 		//Load wallets from saved JSON data
 		fun init(ctx: Context): Boolean{
+			if(inited) return false
+			inited = true
+
 			Companion.ctx = ctx
+
 			val walletFile = File(ctx.filesDir, "wallets.json")
 			wallets = ArrayList<Wallet>()
 			var inp: FileInputStream? = null

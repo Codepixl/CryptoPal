@@ -21,7 +21,6 @@ class CryptoAlarmManager{
 	companion object {
 
 		fun startAlarm(ctx: Context?) {
-			cancelAlarm(ctx, false) //Make sure we don't set multiple
 			val alarmManager = ctx?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 			alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), 1000 * 60 * 30, getIntent(ctx))
 			Log.v("CryptoPal", "Alarm Started")
@@ -35,7 +34,7 @@ class CryptoAlarmManager{
 		}
 
 		private fun getIntent(ctx: Context?): PendingIntent {
-			val intent = Intent("zyzxdev.cryptopal.alarm")
+			val intent = Intent(ctx, CryptoAlarmReceiver::class.java)
 			return PendingIntent.getBroadcast(ctx, 0, intent, 0)
 		}
 	}

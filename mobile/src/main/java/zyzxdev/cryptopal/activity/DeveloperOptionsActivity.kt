@@ -1,11 +1,13 @@
 package zyzxdev.cryptopal.activity
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_developer_options.*
 import zyzxdev.cryptopal.R
+import zyzxdev.cryptopal.alarm.CryptoAlarmReceiver
 import zyzxdev.cryptopal.fragment.dashboard.card.CardManager
 import zyzxdev.cryptopal.fragment.dashboard.card.TransactionCard
 import zyzxdev.cryptopal.wallet.WalletManager
@@ -23,6 +25,11 @@ class DeveloperOptionsActivity : AppCompatActivity() {
 				Toast.makeText(this, "Added Card.", Toast.LENGTH_SHORT).show()
 			}else
 				Toast.makeText(this, "Couldn't add card.", Toast.LENGTH_SHORT).show()
+		}
+
+		updateNow.setOnClickListener {
+			val intent = Intent(this, CryptoAlarmReceiver::class.java)
+			sendBroadcast(intent)
 		}
 	}
 

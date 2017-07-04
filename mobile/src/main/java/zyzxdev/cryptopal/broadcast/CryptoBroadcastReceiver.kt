@@ -12,7 +12,7 @@ import zyzxdev.cryptopal.alarm.CryptoAlarmManager
 class CryptoBroadcastReceiver: BroadcastReceiver(){
 	override fun onReceive(context: Context?, intent: Intent?) {
 		if(intent?.action == Intent.ACTION_BOOT_COMPLETED){
-			//CryptoAlarmManager.startAlarm(context)
+			CryptoAlarmManager.startAlarm(context)
 		}
 	}
 }

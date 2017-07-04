@@ -1,6 +1,8 @@
 package zyzxdev.cryptopal.activity
 
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -83,12 +85,11 @@ class MainTabbedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener{
 
 	override fun onStart(){
 		super.onStart()
-		CryptoAlarmManager.cancelAlarm(this) //Stop updating cards automatically when in the app
+		CryptoAlarmManager.startAlarm(this) //Just make sure the alarm's working, y'know?
 	}
 
 	override fun onPause() {
 		super.onPause()
-		CryptoAlarmManager.startAlarm(this) //Start updating cards again when we leave the activity
 	}
 
 	inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
@@ -107,7 +108,7 @@ class MainTabbedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener{
 	}
 
 	fun shouldRefresh(): Boolean{
-		val ret = !refreshed.getOrDefault(currentTab, false)
+		val ret = !(refreshed[currentTab] ?: false)
 		refreshed.put(currentTab, true)
 		return ret
 	}
