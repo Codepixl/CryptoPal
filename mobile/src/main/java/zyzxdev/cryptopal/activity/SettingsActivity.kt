@@ -15,6 +15,7 @@ import android.preference.ListPreference
 import android.preference.Preference
 import android.preference.PreferenceActivity
 import android.app.ActionBar
+import android.os.Handler
 import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
 import android.preference.RingtonePreference
@@ -24,6 +25,7 @@ import android.view.MenuItem
 import android.widget.Toast
 
 import zyzxdev.cryptopal.R
+import zyzxdev.cryptopal.alarm.CryptoAlarmManager
 import zyzxdev.cryptopal.util.AppCompatPreferenceActivity
 
 /**
@@ -75,7 +77,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 		return PreferenceFragment::class.java.name == fragmentName
 				|| GeneralPreferenceFragment::class.java.name == fragmentName
 				|| DataSyncPreferenceFragment::class.java.name == fragmentName
-				|| NotificationPreferenceFragment::class.java.name == fragmentName
 				|| InfoPreferenceFragment::class.java.name == fragmentName
 	}
 
@@ -101,27 +102,6 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 	}
 
 	/**
-	 * This fragment shows notification preferences only.
-	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	class NotificationPreferenceFragment : PreferenceFragment() {
-		override fun onCreate(savedInstanceState: Bundle?) {
-			super.onCreate(savedInstanceState)
-			addPreferencesFromResource(R.xml.pref_notification)
-			setHasOptionsMenu(true)
-		}
-
-		override fun onOptionsItemSelected(item: MenuItem): Boolean {
-			val id = item.itemId
-			if (id == android.R.id.home) {
-				startActivity(Intent(activity, SettingsActivity::class.java))
-				return true
-			}
-			return super.onOptionsItemSelected(item)
-		}
-	}
-
-	/**
 	 * This fragment shows data and sync preferences only.
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -130,6 +110,24 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 			super.onCreate(savedInstanceState)
 			addPreferencesFromResource(R.xml.pref_data_sync)
 			setHasOptionsMenu(true)
+
+			bindPreferenceSummaryToValue(findPreference("transactionUpdateInterval"))
+			bindPreferenceSummaryToValue(findPreference("transactionRingtone"))
+
+			findPreference("transactionUpdateInterval").setOnPreferenceChangeListener { pref, newval ->
+				Handler().postDelayed({
+					CryptoAlarmManager.startAlarm(activity)
+				}, 1000)
+				sBindPreferenceSummaryToValueListener.onPreferenceChange(pref, newval)
+				true
+			}
+
+			findPreference("autoUpdateTransactions").setOnPreferenceChangeListener { _, _ ->
+				Handler().postDelayed({
+					CryptoAlarmManager.startAlarm(activity)
+				}, 1000)
+				true
+			}
 		}
 
 		override fun onOptionsItemSelected(item: MenuItem): Boolean {

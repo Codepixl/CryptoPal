@@ -11,7 +11,7 @@
         android:id="@+id/walletName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="20dp"
         android:ems="10"
         android:hint="@string/wallet_name_placeholder"
         android:inputType="textPersonName" />
@@ -19,13 +19,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/walletAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="0dp"
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/wallet_address_placeholder"
@@ -33,28 +34,6 @@
 
         <Button
             android:id="@+id/scanAddr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/ic_qrcode" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/walletPK"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/wallet_pk_placeholder"
-            android:inputType="textPersonName" />
-
-        <Button
-            android:id="@+id/scanPK"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

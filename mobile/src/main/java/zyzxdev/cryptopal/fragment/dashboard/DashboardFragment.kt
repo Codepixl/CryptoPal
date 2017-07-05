@@ -55,7 +55,7 @@ class DashboardFragment : Fragment() {
 
 		//Download the current 24-hour BTC value, and set it
 		DownloadTask(context).setCallback(object: TaskCompletedCallback {
-			override fun taskCompleted(data: Object) {
+			override fun taskCompleted(data: Any) {
 				isRefreshing = false
 				if(mainListView != null)
 					(mainListView?.adapter as MultiViewAdapter).notifyDataSetChanged()

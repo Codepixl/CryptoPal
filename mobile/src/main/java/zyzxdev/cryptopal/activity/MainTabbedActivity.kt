@@ -1,5 +1,6 @@
 package zyzxdev.cryptopal.activity
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -17,6 +18,7 @@ import zyzxdev.cryptopal.R
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.os.Build
 import android.content.res.ColorStateList
+import android.support.v7.app.NotificationCompat
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -29,6 +31,9 @@ import zyzxdev.cryptopal.fragment.dashboard.card.CardManager
 import zyzxdev.cryptopal.people.PeopleManager
 import zyzxdev.cryptopal.util.Animations
 import zyzxdev.cryptopal.wallet.WalletManager
+import android.app.NotificationChannel
+import android.graphics.Color
+import zyzxdev.cryptopal.util.Util
 
 
 class MainTabbedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener{
@@ -47,8 +52,11 @@ class MainTabbedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener{
 		CardManager.init(this)
 		Animations.init(this)
 
+		Util.setDefaultPreferenceValues(baseContext)
+
 		//Setup tab icon colors to show white when selected and transparent when not
 		val colors: ColorStateList
+		@Suppress("DEPRECATION")
 		if (Build.VERSION.SDK_INT >= 23)
 			colors = resources.getColorStateList(R.color.bottom_bar, theme)
 		else

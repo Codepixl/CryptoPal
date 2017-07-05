@@ -73,7 +73,7 @@ class WalletsFragment : android.support.v4.app.Fragment() {
 		//Refresh all wallet balances
 		for(wallet in zyzxdev.cryptopal.wallet.WalletManager.Companion.wallets){
 			wallet.refreshBalance(context, object: TaskCompletedCallback {
-				override fun taskCompleted(data: Object) {
+				override fun taskCompleted(data: Any) {
 					refreshedItem()
 				}
 			})

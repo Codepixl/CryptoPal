@@ -24,7 +24,7 @@ import zyzxdev.cryptopal.view.ExpandableCardView
  * Created by aaron on 6/27/2017.
  */
 
-class Wallet(var name: String, var address: String, var privateKey: String){
+class Wallet(var name: String, var address: String){
 	var balance: Double = 0.0
 	var lastUpdated: Long = -1
 	val transactions = ArrayList<Transaction>()
@@ -35,9 +35,8 @@ class Wallet(var name: String, var address: String, var privateKey: String){
 	}
 
 	//Initialize wallet from saved JSON data
-	constructor(json: JSONObject): this("","",""){
+	constructor(json: JSONObject): this("",""){
 		address = json.getString("address")
-		privateKey = json.getString("privateKey")
 		name = json.getString("name")
 		balance = json.getDouble("balance")
 		lastUpdated = json.getLong("lastUpdated")
@@ -53,7 +52,6 @@ class Wallet(var name: String, var address: String, var privateKey: String){
 		obj.put("address", address)
 		obj.put("name", name)
 		obj.put("balance", balance)
-		obj.put("privateKey", privateKey)
 		obj.put("lastUpdated", lastUpdated)
 		val transactionsJSON = JSONArray()
 		for(transaction in transactions)
@@ -75,7 +73,7 @@ class Wallet(var name: String, var address: String, var privateKey: String){
 	//Refresh the balance of this wallet
 	fun refreshBalance(ctx: Context, callback: TaskCompletedCallback? = null){
 		DownloadTask(ctx).setCallback(object: TaskCompletedCallback {
-			override fun taskCompleted(data: Object) {
+			override fun taskCompleted(data: Any) {
 				try {
 					balance = (data as String).toLong()* SATOSHI
 				}catch(e: NumberFormatException){
@@ -95,7 +93,7 @@ class Wallet(var name: String, var address: String, var privateKey: String){
 		Log.v("CryptoPal","Downloading Transactions...")
 
 		DownloadTask(ctx).setCallback(object: TaskCompletedCallback {
-			override fun taskCompleted(data: Object) {
+			override fun taskCompleted(data: Any) {
 				val txHashes = ArrayList<String>()
 				transactions.mapTo(txHashes){ it.hash }
 				val ret = ArrayList<Transaction>()
@@ -113,7 +111,7 @@ class Wallet(var name: String, var address: String, var privateKey: String){
 				lastUpdated = System.currentTimeMillis()
 				if(save)
 					WalletManager.save()
-				callback?.taskCompleted(ret as Object)
+				callback?.taskCompleted(ret)
 			}
 		}).execute("https://blockchain.info/rawaddr/$address")
 	}

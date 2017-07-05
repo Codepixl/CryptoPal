@@ -7,4 +7,36 @@
     <!-- This preference simply launches an intent when selected. Use this UI sparingly, per
          design guidelines. -->
 
+    <PreferenceCategory android:title="@string/pref_category_transactions">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="autoUpdateTransactions"
+            android:summary="@string/pref_summary_auto_update"
+            android:title="@string/pref_auto_update" />
+        <ListPreference
+            android:defaultValue="30"
+            android:dependency="autoUpdateTransactions"
+            android:entries="@array/auto_update_times"
+            android:entryValues="@array/auto_update_times_values"
+            android:key="transactionUpdateInterval"
+            android:title="@string/pref_transaction_update_interval" />
+        <RingtonePreference
+            android:defaultValue="content://settings/system/notification_sound"
+            android:enabled="false"
+            android:key="transactionRingtone"
+            android:ringtoneType="notification"
+            android:title="@string/pref_transaction_ringtone" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:enabled="false"
+            android:key="transactionVibrate"
+            android:title="@string/pref_transaction_vibrate" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:enabled="false"
+            android:key="transactionLight"
+            android:summary="@string/pref_summary_transaction_light"
+            android:title="@string/pref_transaction_light" />
+    </PreferenceCategory>
 </PreferenceScreen>

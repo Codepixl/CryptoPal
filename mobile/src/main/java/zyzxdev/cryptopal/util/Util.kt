@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.preference.PreferenceManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.view.animation.Animation
@@ -45,11 +46,15 @@ class Util{
 			return bmp
 		}
 
+		fun setDefaultPreferenceValues(baseContext: Context){
+			PreferenceManager.setDefaultValues(baseContext, R.xml.pref_data_sync, false)
+			PreferenceManager.setDefaultValues(baseContext, R.xml.pref_general, false)
+		}
+
 		private val SECOND_MILLIS = 1000
 		private val MINUTE_MILLIS = 60 * SECOND_MILLIS
 		private val HOUR_MILLIS = 60 * MINUTE_MILLIS
 		private val DAY_MILLIS = 24 * HOUR_MILLIS
-
 
 		fun getTimeAgo(time: Long, ctx: Context): String? {
 			var time = time
