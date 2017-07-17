@@ -42,7 +42,7 @@ class WalletsFragment : android.support.v4.app.Fragment() {
 
 	//Set options menu
 	override fun onCreateOptionsMenu(menu: android.view.Menu, inflater: android.view.MenuInflater) {
-		inflater.inflate(R.menu.menu_dashboard, menu)
+		inflater.inflate(R.menu.menu_wallets, menu)
 		super.onCreateOptionsMenu(menu, inflater)
 	}
 
@@ -73,7 +73,7 @@ class WalletsFragment : android.support.v4.app.Fragment() {
 		//Refresh all wallet balances
 		for(wallet in zyzxdev.cryptopal.wallet.WalletManager.Companion.wallets){
 			wallet.refreshBalance(context, object: TaskCompletedCallback {
-				override fun taskCompleted(data: Any) {
+				override fun taskCompleted(data: Any?) {
 					refreshedItem()
 				}
 			})

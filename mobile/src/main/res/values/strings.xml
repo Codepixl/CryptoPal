@@ -86,4 +86,9 @@
     <string name="add_update_card">Add update card</string>
     <string name="channel_transactions">Transactions</string>
     <string name="channel_transactions_description">Notifications for new transactions.</string>
+	<string name="clear_all">Clear All</string>
+	<string name="update_now">Update now</string>
+	<string name="send_test_notification">Send test notification</string>
+	<string name="channel_silent">Silent</string>
+	<string name="channel_silent_description">Un-important notifications that are silent.</string>
 </resources>

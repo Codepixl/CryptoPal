@@ -3,9 +3,8 @@ package zyzxdev.cryptopal.fragment.dashboard
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.widget.ListView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_dashboard.*
@@ -21,11 +20,13 @@ import zyzxdev.cryptopal.util.TaskCompletedCallback
 
 class DashboardFragment : Fragment() {
 	var isRefreshing = false
+	var adapter: CardManager.CardViewAdapter? = null
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
 
-		mainListView.adapter = CardManager.CardViewAdapter(context, CardManager.cards, mainListView)
+		adapter = CardManager.CardViewAdapter(context, CardManager.cards, mainListView)
+		mainListView.adapter = adapter
 
 		//Refresh data now, if necessary
 		if(activity is MainTabbedActivity)
@@ -40,7 +41,22 @@ class DashboardFragment : Fragment() {
 
 	override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 		// Inflate the layout for this fragment
+		setHasOptionsMenu(true)
 		return inflater!!.inflate(R.layout.fragment_dashboard, container, false)
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+		inflater?.inflate(R.menu.menu_dashboard, menu)
+		super.onCreateOptionsMenu(menu, inflater)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+		when(item?.itemId){
+			R.id.clearAll -> {
+				adapter?.dismissAll()
+			}
+		}
+		return super.onOptionsItemSelected(item)
 	}
 
 	private fun refreshData(override: Boolean = false){
@@ -55,13 +71,15 @@ class DashboardFragment : Fragment() {
 
 		//Download the current 24-hour BTC value, and set it
 		DownloadTask(context).setCallback(object: TaskCompletedCallback {
-			override fun taskCompleted(data: Any) {
+			override fun taskCompleted(data: Any?) {
 				isRefreshing = false
 				if(mainListView != null)
 					(mainListView?.adapter as MultiViewAdapter).notifyDataSetChanged()
 				try {
-					val btc = (data as String).toFloat()
-					context.getSharedPreferences("data", Context.MODE_PRIVATE).edit().putFloat("btcValue", btc).apply()
+					if(data != null) {
+						val btc = (data as String).toFloat()
+						context.getSharedPreferences("data", Context.MODE_PRIVATE).edit().putFloat("btcValue", btc).apply()
+					}
 				}catch(e: NumberFormatException){
 					Toast.makeText(context, R.string.error_updating, Toast.LENGTH_SHORT).show()
 				}

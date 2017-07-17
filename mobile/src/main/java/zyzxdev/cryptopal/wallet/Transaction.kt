@@ -3,6 +3,7 @@ package zyzxdev.cryptopal.wallet
 import android.annotation.SuppressLint
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
+import android.text.style.TtsSpan
 import android.view.ViewGroup
 import android.view.View
 import android.widget.ImageView
@@ -15,6 +16,8 @@ import zyzxdev.cryptopal.fragment.dashboard.card.TransactionCard
 import zyzxdev.cryptopal.people.PeopleManager
 import zyzxdev.cryptopal.util.Util
 import zyzxdev.cryptopal.view.ExpandableCardView
+import java.util.*
+import kotlin.collections.ArrayList
 
 class Transaction private constructor(){
 	var sent: Boolean = false
@@ -44,6 +47,30 @@ class Transaction private constructor(){
 			val outputs = json.getJSONArray("otherOutputs")
 			for(i in 0 until outputs.length())
 				ret.otherOutputs.add(outputs.getString(i))
+
+			return ret
+		}
+
+		fun makeExample(randomize: Boolean = false, sent: Boolean = true, amount: Double = 12.34, time: Long = System.currentTimeMillis(), newBTC: Boolean = false, address: String = "abcd1234", hash: String = "abcdef12345", inputs: ArrayList<String> = arrayListOf("wxyz6789"), outputs: ArrayList<String> = arrayListOf("wxyz6789")): Transaction {
+			val ret = Transaction()
+
+			if(randomize){
+				val r = Random()
+				ret.sent = r.nextBoolean()
+				ret.amount = r.nextDouble()*2+0.1
+				ret.time = System.currentTimeMillis()-(r.nextInt(10000 * 60 * 60))
+				ret.newBTC = r.nextDouble() < 0.1
+			}else{
+				ret.sent = sent
+				ret.amount = amount
+				ret.time = time
+				ret.newBTC = newBTC
+			}
+
+			ret.otherInputs.addAll(inputs)
+			ret.otherOutputs.addAll(outputs)
+			ret.hash = hash
+			ret.address = address
 
 			return ret
 		}

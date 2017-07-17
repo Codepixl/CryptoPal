@@ -1,10 +1,13 @@
 package zyzxdev.cryptopal.fragment.dashboard.card
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Handler
 import android.support.v7.widget.CardView
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ListView
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import org.json.JSONArray
@@ -126,11 +129,36 @@ class CardManager{
 		}
 	}
 
-	class CardViewAdapter(ctx: Context, items: List<MultiViewAdapter.MultiViewItem>, listView: ListView): MultiViewAdapter(ctx, items){
+
+	class CardViewAdapter(ctx: Context, items: List<MultiViewAdapter.MultiViewItem>, val listView: ListView): MultiViewAdapter(ctx, items){
+		val touchListener: SwipeDismissListViewTouchListener = SwipeDismissListViewTouchListener(listView, CardManager.ListViewSwipeDismissHandler())
 		init{
-			val touchListener = SwipeDismissListViewTouchListener(listView, CardManager.ListViewSwipeDismissHandler())
 			listView.setOnTouchListener(touchListener)
 			listView.setOnScrollListener(touchListener.makeScrollListener())
+		}
+
+		fun dismissAll(){
+			listView.smoothScrollToPosition(0)
+			Handler().postDelayed({
+				(0 until listView.childCount)
+						.filter { touchListener.mCallbacks.canDismiss(it) }
+						.forEach {
+							val view = listView.getChildAt(it)
+							view.animate()
+									.translationX(view.width*0.75f)
+									.alpha(0f)
+									.setDuration(250)
+									.setStartDelay(it*50L)
+									.start()
+						}
+
+				Handler().postDelayed({
+					cards.clear()
+					cards.add(BTCValueCard())
+					save()
+					(listView.adapter as MultiViewAdapter).notifyDataSetChanged()
+				}, 50*listView.childCount+100L)
+			}, 250)
 		}
 
 		override fun getView(i: Int, view: View?, viewGroup: ViewGroup?): View {
@@ -141,7 +169,7 @@ class CardManager{
 					return i != 0
 				}
 
-				override fun onDismiss(view: View?, token: Any?) {
+				override fun onDismiss(dismissView: View?, token: Any?) {
 					cards.removeAt(i)
 					save()
 					((viewGroup as ListView).adapter as MultiViewAdapter).notifyDataSetChanged()

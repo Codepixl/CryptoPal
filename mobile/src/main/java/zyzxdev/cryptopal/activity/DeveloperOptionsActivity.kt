@@ -10,6 +10,8 @@ import zyzxdev.cryptopal.R
 import zyzxdev.cryptopal.alarm.CryptoAlarmReceiver
 import zyzxdev.cryptopal.fragment.dashboard.card.CardManager
 import zyzxdev.cryptopal.fragment.dashboard.card.TransactionCard
+import zyzxdev.cryptopal.util.CryptoNotificationManager
+import zyzxdev.cryptopal.wallet.Transaction
 import zyzxdev.cryptopal.wallet.WalletManager
 
 class DeveloperOptionsActivity : AppCompatActivity() {
@@ -20,16 +22,20 @@ class DeveloperOptionsActivity : AppCompatActivity() {
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		addTransactionCard.setOnClickListener {
-			if(WalletManager.wallets.size > 0 && WalletManager.wallets[0].transactions.size > 0) {
-				CardManager.addCard(TransactionCard(WalletManager.wallets[0].transactions[0]))
-				Toast.makeText(this, "Added Card.", Toast.LENGTH_SHORT).show()
-			}else
-				Toast.makeText(this, "Couldn't add card.", Toast.LENGTH_SHORT).show()
+			CardManager.addCard(TransactionCard(Transaction.makeExample(randomize = true)))
 		}
 
 		updateNow.setOnClickListener {
 			val intent = Intent(this, CryptoAlarmReceiver::class.java)
 			sendBroadcast(intent)
+		}
+
+		sendTestNotification.setOnClickListener {
+			val notification = CryptoNotificationManager.buildNotification(this, CryptoNotificationManager.Channel.TRANSACTIONS)
+					.setContentTitle("Test")
+					.setContentText("This is a test")
+					.build()
+			CryptoNotificationManager.sendNotification(this, notification)
 		}
 	}
 

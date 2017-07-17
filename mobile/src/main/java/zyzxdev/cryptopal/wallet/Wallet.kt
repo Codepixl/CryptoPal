@@ -73,9 +73,10 @@ class Wallet(var name: String, var address: String){
 	//Refresh the balance of this wallet
 	fun refreshBalance(ctx: Context, callback: TaskCompletedCallback? = null){
 		DownloadTask(ctx).setCallback(object: TaskCompletedCallback {
-			override fun taskCompleted(data: Any) {
+			override fun taskCompleted(data: Any?) {
 				try {
-					balance = (data as String).toLong()* SATOSHI
+					if(data != null)
+						balance = (data as String).toLong()* SATOSHI
 				}catch(e: NumberFormatException){
 					balance = 0.0
 				}
@@ -93,12 +94,11 @@ class Wallet(var name: String, var address: String){
 		Log.v("CryptoPal","Downloading Transactions...")
 
 		DownloadTask(ctx).setCallback(object: TaskCompletedCallback {
-			override fun taskCompleted(data: Any) {
+			override fun taskCompleted(data: Any?) {
 				val txHashes = ArrayList<String>()
 				transactions.mapTo(txHashes){ it.hash }
 				val ret = ArrayList<Transaction>()
 				try {
-
 					val jsonobj = JSONObject(data as String)
 					balance = jsonobj.getLong("final_balance")* SATOSHI
 					parseTransactions(jsonobj.getJSONArray("txs"))
@@ -107,6 +107,7 @@ class Wallet(var name: String, var address: String){
 				}catch(e: JSONException){
 					e.printStackTrace()
 					Log.v("CryptoPal","Error parsing JSON.")
+					callback?.taskCompleted(null)
 				}
 				lastUpdated = System.currentTimeMillis()
 				if(save)

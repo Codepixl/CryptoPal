@@ -108,7 +108,7 @@ class WalletDetailsActivity : AppCompatActivity() {
 		swipeRefresh?.isRefreshing = true
 		val ctx = this
 		wallet?.refreshTransactions(this, object: TaskCompletedCallback {
-			override fun taskCompleted(data: Any) {
+			override fun taskCompleted(data: Any?) {
 				swipeRefresh?.isRefreshing = false
 				(listView?.adapter as Transaction.TransactionAdapter).notifyDataSetChanged()
 				(findViewById<TextView>(R.id.lastUpdated) as TextView).text = getString(R.string.transactions_last_updated, Util.getTimeAgo(wallet!!.lastUpdated, ctx))

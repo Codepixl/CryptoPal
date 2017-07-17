@@ -26,7 +26,7 @@ class AddWalletActivity : android.support.v7.app.AppCompatActivity() {
 			WalletManager.wallets.add(wallet)
 			WalletManager.save()
 			wallet.refreshTransactions(this, object: TaskCompletedCallback {
-				override fun taskCompleted(data: Any) {
+				override fun taskCompleted(data: Any?) {
 					onBackPressed()
 				}
 			})

@@ -7,5 +7,5 @@ import java.util.*
  */
 @FunctionalInterface
 interface TaskCompletedCallback{
-	fun taskCompleted(data: Any)
+	fun taskCompleted(data: Any?)
 }

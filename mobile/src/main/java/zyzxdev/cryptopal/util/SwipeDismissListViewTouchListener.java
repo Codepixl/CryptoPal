@@ -82,7 +82,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
 
 	// Fixed properties
 	private ListView mListView;
-	private DismissCallbacks mCallbacks;
+	public DismissCallbacks mCallbacks;
 	private int mViewWidth = 1; // 1 and not 0 to prevent dividing by zero
 
 	// Transient properties
@@ -340,7 +340,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
 		}
 	}
 
-	private void performDismiss(final View dismissView, final int dismissPosition) {
+	public void performDismiss(final View dismissView, final int dismissPosition) {
 		// Animate the dismissed list item to zero-height and fire the dismiss callback when
 		// all dismissed list item animations have completed. This triggers layout on each animation
 		// frame; in the future we may want to do something smarter and more performant.
